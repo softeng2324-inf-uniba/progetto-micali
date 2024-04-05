@@ -1,4 +1,4 @@
-#Codice di condotta dei membri del team Micali
+# Codice di condotta dei membri del team Micali
 
 **Regole:**
 1) Partecipazione della squadra
