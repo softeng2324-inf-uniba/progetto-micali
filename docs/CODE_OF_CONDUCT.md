@@ -19,4 +19,7 @@
 1) Non invierò il codice di produzione senza test approfonditi sulle unità di memoria.
 1) Non invierò codice che faccia sì che uno strumento emetta un warning.
 1) Sarò ordinato quando scriverò il codice.
-1) Sacrificherò righe di codice pur di essere il più ordinato possibile. 
+1) Sacrificherò righe di codice pur di essere il più ordinato possibile.
+>[!IMPORTANT]
+>
+>Chi non rispetta le regole verrà severamente punito.
