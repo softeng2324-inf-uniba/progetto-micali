@@ -168,7 +168,7 @@ Affinché tutti i membri del team possano visualizzare e scaricare l'immagine Do
 N.B.: il package sarà visibile solo dopo che GitHub Actions avrà completato con successo la prima build del progetto;
 3. cliccare sul link "Package settings", presente nella pagina dedicata al package come ultima voce nella barra laterale destra (vedi freccia rossa in figura); ![ExecuteDockerImage_1](./img/packageSettings.png)
 4. scorrere in basso, sino all'intestazione "Inherited access"; rimuovere la spunta dalla checkbox *"Inherit access from source repository (recommended)"* – questa operazione comporterà un ricaricamento automatico della pagina;
-5. dopo il ricaricamento della pagina, l'intestazione *"Inherited access"* viene sostituita dall'intestazione *"Manage access"*; a destra dell'intestazione compare inoltre il bottone *"Invite teams or people"*; fare click su tale bottone e aggiungere il proprio team alla lista dei membri, conferendo allo stesso i permessi di "Admin" (vedi freccia rossa in figura); ![ExecuteDockerImage_1](./img/manageAccess.png).
+5. dopo il ricaricamento della pagina, l'intestazione *"Inherited access"* viene sostituita dall'intestazione *"Manage access"*; a destra dell'intestazione compare inoltre il bottone *"Invite teams or people"*; fare click su tale bottone e aggiungere il proprio team alla lista dei membri, conferendo allo stesso i permessi di "Admin" (vedi freccia rossa in figura); ![ExecuteDockerImage_1](./img/manageAccess.png.jpeg).
 
 ## Aggiunta del badge di GitHub Actions nel README
 
