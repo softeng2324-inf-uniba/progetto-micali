@@ -15,7 +15,6 @@ public final class App {
         
 
     }
-
     /**
      * Entrypoint of the application.
      *
