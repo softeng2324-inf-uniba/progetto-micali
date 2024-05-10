@@ -74,13 +74,26 @@ public final class App {
        }
 
 
-    public static void main(final String[] args) {
-        printWelcome(ColorShell.RED);
-
+    
+       public static void main(final String[] args) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            printWelcome(ColorShell.RED);
+            while (!exit) {
+                System.out.println("\nMENU : ");
+                String input = scanner.nextLine().toLowerCase().trim();
+                CommandType command = checkCommand(COMMAND, input);
+                if (command != null) {
+                    HandleModule handler = COMMAND.get(command);
+                    handler.handle(scanner, new Scanner(input), command);
+                } else {
+                    System.out.println("Comando non valido, riprova");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Errore di I/O");
+            System.out.println("Errore: " + e.getMessage());
+        }
     }
-
-
-
 
 
         public static void handleHelp(final Scanner input , final Scanner value , final CommandType command) throws IOException {
