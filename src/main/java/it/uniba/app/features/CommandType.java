@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class CommandParser {
     public enum CommandType {
         START(new Pattern[] {Pattern.compile("^\\/gioca$"),
             Pattern.compile("^\\/play$")}),
@@ -38,4 +37,4 @@ public class CommandParser {
         return new HashSet<>(this.compiled);
     }
   }
-}
+
