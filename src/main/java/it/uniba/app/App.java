@@ -124,6 +124,9 @@ public final class App {
             }            
         }
     }
-
+    public static void handleEmpty(final Scanner input, final Scanner value, final CommandType command) throws IOException {
+       
+    }
+    }
     
-}
+    
