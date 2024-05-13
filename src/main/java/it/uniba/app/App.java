@@ -69,7 +69,7 @@ public final class App {
         COMMAND.put(CommandType.EXIT,  App::handleExit);
         //COMMAND.put(CommandType.START, App::handlePlay);
         //COMMAND.put(CommandType.TABLE, App::handleBoard);
-        //COMMAND.put(CommandType.EMPTY, App::handleEmpty);
+        COMMAND.put(CommandType.EMPTY, App::handleEmpty);
         //COMMAND.put(CommandType.MOVES, App::handleMoves);
        }
 
