@@ -127,6 +127,33 @@ public final class App {
     public static void handleEmpty(final Scanner input, final Scanner value, final CommandType command) throws IOException {
        // Creazione della tabella vuota
     char[][] table = new char[7][7];
+    // Riempimento della tabella con spazi vuoti
+    for (int i = 0; i < 7; i++) {
+        for (int j = 0; j < 7; j++) {
+            table[i][j] = ' ';
+        }
+    }
+    
+    // Visualizzazione della numerazione superiore
+    System.out.println("   a   b   c   d   e   f   g");
+    System.out.println(" +---+---+---+---+---+---+---+");
+    // Visualizzazione della tabella
+    for (int i = 0; i < 7; i++) {
+        // Numerazione sinistra
+        System.out.print((i + 1) + "| ");
+        for (int j = 0; j < 7; j++) {
+            System.out.print(table[i][j] + " | ");
+        }
+        // Numerazione destra
+        System.out.println(" " + (i + 1));
+        // Linea divisoria orizzontale
+        if (i < 6) {
+            System.out.println(" +---+---+---+---+---+---+---+");
+        }
+    }
+    // Numerazione inferiore
+    System.out.println(" +---+---+---+---+---+---+---+");
+    System.out.println("   a   b   c   d   e   f   g");
     }
     }
     
