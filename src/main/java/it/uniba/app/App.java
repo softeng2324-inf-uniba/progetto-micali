@@ -10,7 +10,7 @@ import it.uniba.app.features.CommandType;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.Pattern;
-import javax.annotation.Syntax;
+
 
 /**
  * Main class of the application.
@@ -66,7 +66,7 @@ public final class App {
      */
     static {
         COMMAND.put(CommandType.HELP,  App::handleHelp);
-        //COMMAND.put(CommandType.EXIT,  App::handleExit);
+        COMMAND.put(CommandType.EXIT,  App::handleExit);
         //COMMAND.put(CommandType.START, App::handlePlay);
         //COMMAND.put(CommandType.TABLE, App::handleBoard);
         //COMMAND.put(CommandType.EMPTY, App::handleEmpty);
@@ -79,8 +79,8 @@ public final class App {
         try (Scanner scanner = new Scanner(System.in)) {
             printWelcome(ColorShell.RED);
             while (!exit) {
-                System.out.println("\nMENU : ");
-                String input = scanner.nextLine().toLowerCase().trim();
+                System.out.print("\nMENU : ");
+                String input = scanner.next().toLowerCase().trim();
                 CommandType command = checkCommand(COMMAND, input);
                 if (command != null) {
                     HandleModule handler = COMMAND.get(command);
@@ -106,4 +106,24 @@ public final class App {
         System.out.println("/qualimosse - Mostra le mosse disponibili");
         System.out.println("/abbandona - Abbandona la partita in corso");
     }
+
+
+    public static void handleExit(final Scanner input , final Scanner value , final CommandType command) throws IOException {
+        
+        Scanner choice = new Scanner(System.in);
+        System.out.println("Sei sicuro di voler uscire dal gioco? (s/n)");
+        while (exit == false) {
+            String risposta = choice.next().toLowerCase().trim();
+            if (risposta.equals("s")) {
+                exit = true;
+            } else if (risposta.equals("n")) {
+                exit = false; 
+                break;             
+            } else {
+                System.out.println("Risposta non valida, riprova");
+            }            
+        }
+    }
+
+    
 }

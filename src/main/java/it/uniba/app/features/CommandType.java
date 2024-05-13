@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
             Pattern.compile("^\\--help$"),
             Pattern.compile("^\\-h$")}),   
         EMPTY(new Pattern[] {Pattern.compile("^\\/vuoto$"),
-            Pattern.compile("^\\/vuoto$")}),
+            Pattern.compile("^\\/empty$")}),
         TABLE(new Pattern[] {Pattern.compile("^\\/tavoliere$"),
             Pattern.compile("^\\/table$")}),
         MOVES(new Pattern[] {Pattern.compile("^\\/qualimosse$"),
