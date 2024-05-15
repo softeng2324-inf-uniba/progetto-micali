@@ -17,10 +17,10 @@ import java.util.regex.Pattern;
             Pattern.compile("^\\/empty$")}),
         TABLE(new Pattern[] {Pattern.compile("^\\/tavoliere$"),
             Pattern.compile("^\\/table$")}),
-        MOVES(new Pattern[] {Pattern.compile("^\\/qualimosse$"),
+        SHOW_MOVES(new Pattern[] {Pattern.compile("^\\/qualimosse$"),
             Pattern.compile("^\\/moves$")}),
-        EXITEGAME(new Pattern[] {Pattern.compile("^\\/abbandona$"),
-            Pattern.compile("^\\/abbandona$")});   
+        GIVE_UP(new Pattern[] {Pattern.compile("^\\/abbandona$"),
+            Pattern.compile("^\\/give up$")});   
 
         private final Set<Pattern> compiled;
 
