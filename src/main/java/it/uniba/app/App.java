@@ -74,6 +74,7 @@ public final class App {
         //PRE_COMMAND.put(CommandType.MOVES, App::handleShoWMoves);
         //POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
         //POST_COMMAND.put(CommandType.EXIT, App::handleShowMoves);
+        //POST_COMMAND.put(CommandType.EXIT, App::handleHelp);
        }
 
 
