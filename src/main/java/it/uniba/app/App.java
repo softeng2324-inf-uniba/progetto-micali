@@ -18,7 +18,8 @@ import java.util.regex.Pattern;
 public final class App {
 
     public static boolean exit = false;   
-    public static final Map<CommandType, HandleModule> COMMAND = new HashMap<>();
+    public static final Map<CommandType, HandleModule> PRE_COMMAND = new HashMap<>();
+    public static final Map<CommandType, HandleModule> POST_COMMAND = new HashMap<>();
 
 
 
@@ -65,12 +66,14 @@ public final class App {
      * @return Map<String, CommandType>
      */
     static {
-        COMMAND.put(CommandType.HELP,  App::handleHelp);
-        COMMAND.put(CommandType.EXIT,  App::handleExit);
-        //COMMAND.put(CommandType.START, App::handlePlay);
-        //COMMAND.put(CommandType.TABLE, App::handleBoard);
-        //COMMAND.put(CommandType.EMPTY, App::handleEmpty);
-        //COMMAND.put(CommandType.MOVES, App::handleMoves);
+        PRE_COMMAND.put(CommandType.HELP,  App::handleHelp);
+        PRE_COMMAND.put(CommandType.EXIT,  App::handleExit);
+        //PRE_COMMAND.put(CommandType.START, App::handlePlay);
+        //PRE_COMMAND.put(CommandType.TABLE, App::handleBoard);
+        //PRE_COMMAND.put(CommandType.EMPTY, App::handleEmpty);
+        //PRE_COMMAND.put(CommandType.MOVES, App::handleShoWMoves);
+        //POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
+        //POST_COMMAND.put(CommandType.EXIT, App::handleShowMoves);
        }
 
 
@@ -81,9 +84,9 @@ public final class App {
             while (!exit) {
                 System.out.print("\nMENU : ");
                 String input = scanner.next().toLowerCase().trim();
-                CommandType command = checkCommand(COMMAND, input);
+                CommandType command = checkCommand(PRE_COMMAND, input);
                 if (command != null) {
-                    HandleModule handler = COMMAND.get(command);
+                    HandleModule handler = PRE_COMMAND.get(command);
                     handler.handle(scanner, new Scanner(input), command);
                 } else {
                     System.out.println("Comando non valido, riprova");
@@ -99,12 +102,15 @@ public final class App {
         public static void handleHelp(final Scanner input , final Scanner value , final CommandType command) throws IOException {
         System.out.println("Comandi disponibili: ");
         System.out.println("/gioca - Inizia una nuova partita");
-        System.out.println("/esci - Termina il gioco");
+        System.out.println("/esci -  Termina il gioco");
         System.out.println("/aiuto - Mostra l'elenco dei comandi disponibili");
         System.out.println("/vuoto - Crea un tavoliere vuoto");
-        System.out.println("/tavoliere - Mostra il tavoliere di gioco");
+        System.out.println("/tavoliere -  Mostra il tavoliere di gioco");
         System.out.println("/qualimosse - Mostra le mosse disponibili");
+        System.out.println("/abbandona -  Abbandona la partita in corso");
+        System.out.println("\nLista di comandi eseguibili dopo l'avvio di una partita: \n");
         System.out.println("/abbandona - Abbandona la partita in corso");
+
     }
 
 
