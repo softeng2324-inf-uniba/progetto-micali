@@ -1,5 +1,6 @@
 package it.uniba.app;
 
+import it.uniba.app.elements.Table;
 import it.uniba.app.features.ColorShell;
 import it.uniba.app.features.ViewResult;
 import it.uniba.app.interfaces.HandleModule;
@@ -20,6 +21,7 @@ public final class App {
     public static boolean exit = false;   
     public static final Map<CommandType, HandleModule> PRE_COMMAND = new HashMap<>();
     public static final Map<CommandType, HandleModule> POST_COMMAND = new HashMap<>();
+    public static final Table table = Table.getInstance(7);
 
 
 
@@ -70,7 +72,7 @@ public final class App {
         PRE_COMMAND.put(CommandType.EXIT,  App::handleExit);
         //PRE_COMMAND.put(CommandType.START, App::handlePlay);
         //PRE_COMMAND.put(CommandType.TABLE, App::handleBoard);
-        //PRE_COMMAND.put(CommandType.EMPTY, App::handleEmpty);
+        PRE_COMMAND.put(CommandType.EMPTY, App::handleEmpty);
         //PRE_COMMAND.put(CommandType.MOVES, App::handleShoWMoves);
         //POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
         //POST_COMMAND.put(CommandType.EXIT, App::handleShowMoves);
@@ -131,6 +133,9 @@ public final class App {
             }            
         }
     }
-
+    public static void handleEmpty(final Scanner input , final Scanner value , final CommandType command) throws IOException {
+        table.resetMap();
+        table.printMap();
+    }
     
 }
