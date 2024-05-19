@@ -1,5 +1,6 @@
 package it.uniba.app;
 
+import it.uniba.app.elements.Game;
 import it.uniba.app.elements.Table;
 import it.uniba.app.features.ColorShell;
 import it.uniba.app.features.ViewResult;
@@ -22,6 +23,8 @@ public final class App {
     public static final Map<CommandType, HandleModule> PRE_COMMAND = new HashMap<>();
     public static final Map<CommandType, HandleModule> POST_COMMAND = new HashMap<>();
     public static final Table table = Table.getInstance(7);
+    private static boolean gameRunning = true;
+    private static Game game;
 
 
     /**
@@ -69,7 +72,7 @@ public final class App {
     static {
         PRE_COMMAND.put(CommandType.HELP,  App::handleHelp);
         PRE_COMMAND.put(CommandType.EXIT,  App::handleExit);
-        //PRE_COMMAND.put(CommandType.START, App::handlePlay);
+        PRE_COMMAND.put(CommandType.START, App::handlePlay);
         //PRE_COMMAND.put(CommandType.TABLE, App::handleBoard);
         PRE_COMMAND.put(CommandType.EMPTY, App::handleEmpty);
         //PRE_COMMAND.put(CommandType.MOVES, App::handleShoWMoves);
@@ -113,6 +116,50 @@ public final class App {
         System.out.println("\nLista di comandi eseguibili dopo l'avvio di una partita: \n");
         System.out.println("/abbandona - Abbandona la partita in corso");
 
+    }
+
+    public static void handlePlay(final Scanner input, final Scanner value, final CommandType command) {
+        if (command == CommandType.START) {
+            if (game == null || !game.getStateGame()) {
+                game = new Game();  // Crea una nuova istanza di Game
+                game.setStateGame(true);  // Imposta lo stato del gioco a vero
+                game.getTable().setupGioco();  // Configura il tavoliere per un nuovo gioco
+                game.getTable().printMap();  // Stampa il tavoliere
+            } else {
+                System.out.println("Una partita è già in corso. Terminare la partita corrente prima di iniziarne una nuova.");
+                return;
+            }
+        }
+
+        while (game.getStateGame()) {
+            try {
+                System.out.print("\n | GAME | : ");
+                String inputPlay = input.nextLine().toLowerCase().trim();
+                CommandType commPlay = checkCommand(POST_COMMAND, inputPlay);
+                if (commPlay != null) {
+                    HandleModule handler = POST_COMMAND.get(commPlay);
+                    if (handler != null) {
+                        try {
+                            handler.handle(input, new Scanner(inputPlay), commPlay);
+                            if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP)) {
+                                game.getTable().printMap();  // Aggiungi questa riga se vuoi ristampare il tavoliere dopo ogni comando
+                            }
+                        } catch (IOException e) {
+                            System.out.println("Errore di I/O: " + e.getMessage());
+                        }
+                    }
+                } else {
+                    System.out.println("Comando non valido, riprova");
+                }
+            } catch (Exception e) {
+                System.out.println("Errore di I/O: " + e.getMessage());
+            }
+        }
+    
+        // Aggiunta di questa riga per chiarire che il gioco è finito e si sta tornando al menu principale.
+        if (!game.getStateGame()) {
+            System.out.println("Tornando al menu principale...");
+        }
     }
 
 
