@@ -76,7 +76,7 @@ public final class App {
         //PRE_COMMAND.put(CommandType.TABLE, App::handleBoard);
         PRE_COMMAND.put(CommandType.EMPTY, App::handleEmpty);
         //PRE_COMMAND.put(CommandType.MOVES, App::handleShoWMoves);
-        //POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
+        POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
         //POST_COMMAND.put(CommandType.EXIT, App::handleShowMoves);
         //POST_COMMAND.put(CommandType.EXIT, App::handleHelp);
        }
@@ -183,5 +183,20 @@ public final class App {
     public static void handleEmpty(final Scanner input , final Scanner value , final CommandType command)throws IOException{
         table.resetMap();
         table.printMap();
+    }
+
+
+    public static void handleGiveUp(final Scanner input, final Scanner value, final CommandType command) {
+        System.out.println("Sicuro di voler abbandonare la partita? (si/no) > ");
+        String choice = input.nextLine().trim();
+        if (choice.equalsIgnoreCase("si")) {
+            System.out.println("\nOk! Hai deciso di abbandonare la partita.");
+            game.setStateGame(false); // Imposta lo stato del gioco a falso per terminare la partita
+            return; // Uscita immediata dal metodo per evitare ulteriori stampa della mappa
+        } else if (choice.equalsIgnoreCase("no")) {
+            System.out.println("\nLa partita continua. Puoi effettuare nuovi tentativi.");
+        } else {
+            System.out.println("\nScelta non valida, riprova..");
+        }
     }
 }
