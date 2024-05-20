@@ -1,7 +1,7 @@
 package it.uniba.app.elements;
 
 
-/**
+/**<Entity> class
  * The Game class represents a game instance.
  */
 public class Game {

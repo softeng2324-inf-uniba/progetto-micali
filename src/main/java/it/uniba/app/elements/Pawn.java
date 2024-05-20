@@ -1,6 +1,7 @@
 package it.uniba.app.elements;
 
 /**
+ * <Entity> class
  * Class representing a pawn in the game.
  */
 

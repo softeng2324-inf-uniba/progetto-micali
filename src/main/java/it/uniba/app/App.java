@@ -14,9 +14,7 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 
 
-/**
- * Main class of the application.
- */
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -24,6 +22,7 @@ import java.util.regex.Pattern;
 import java.io.IOException;
 
 /**
+ * <Boundary> Class
  * The main class of the application.
  */
 public final class App {

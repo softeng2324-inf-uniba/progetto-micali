@@ -1,6 +1,7 @@
 package it.uniba.app.features;
 
-/**
+/**<Entity> class
+ * 
  * Enum representing different view results.
  */
 public enum ViewResult {

@@ -2,6 +2,8 @@ package it.uniba.app.elements;
 
 
 /**
+ * <Boundary> class
+ * 
  * The Table class represents the game board for a specific game.
  * It contains methods to initialize the board, set up the game, and print the board.
  */

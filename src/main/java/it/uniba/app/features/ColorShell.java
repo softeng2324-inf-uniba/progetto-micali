@@ -1,6 +1,7 @@
 package it.uniba.app.features;
 
-/**
+/**<Entity> class
+ * 
  * The ColorShell enum represents different colors that can be used in a shell or console output.
  */
 public enum ColorShell {
