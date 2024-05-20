@@ -1,7 +1,5 @@
 package it.uniba.app.elements;
 
-import it.uniba.app.features.ColorShell;
-
 public class Table {
     private static Table instance;
     private Pawn[][] map;
@@ -29,12 +27,13 @@ public class Table {
     }
 
     public void setupGioco() {
-        // Configura le pedine con le coordinate appropriate
-        map[0][0] = new Pawn("Player1", '\u2b24', "\u001B[31m", 0, 0);
-        map[0][size - 1] = new Pawn("Player2", '\u2b24', "\u001B[34m", 0, size - 1);
-        map[size - 1][0] = new Pawn("Player2", '\u2b24', "\u001B[34m", size - 1, 0);
-        map[size - 1][size - 1] = new Pawn("Player1", '\u2b24', "\u001B[31m", size - 1, size - 1);
-    }
+    // Configura le pedine con le coordinate appropriate
+    map[0][0] = new Pawn("Player1", '\u26C0', "\u001B[40m", 0, 0); // Bianco
+    map[0][size - 1] = new Pawn("Player2", '\u26C2', "\u001B[40m", 0, size - 1); // Nero
+    map[size - 1][0] = new Pawn("Player2", '\u26C2', "\u001B[40m", size - 1, 0); // Nero
+    map[size - 1][size - 1] = new Pawn("Player1", '\u26C0', "\u001B[40m", size - 1, size - 1); // Bianco
+}
+
 
     public void printMap() {
         System.out.println("   a   b   c   d   e   f   g");

@@ -103,15 +103,18 @@ public final class App {
 
         public static void handleHelp(final Scanner input , final Scanner value , final CommandType command) throws IOException {
         System.out.println("Comandi disponibili: ");
-        System.out.println("/gioca - Inizia una nuova partita");
-        System.out.println("/esci -  Termina il gioco");
-        System.out.println("/aiuto - Mostra l'elenco dei comandi disponibili");
-        System.out.println("/vuoto - Crea un tavoliere vuoto");
-        System.out.println("/tavoliere -  Mostra il tavoliere di gioco");
-        System.out.println("/qualimosse - Mostra le mosse disponibili");
-        System.out.println("/abbandona -  Abbandona la partita in corso");
+        System.out.println("/gioca/play - Inizia una nuova partita");
+        System.out.println("/esci/exit -  Termina il gioco");
+        System.out.println("/aiuto/help - Mostra l'elenco dei comandi disponibili");
+        System.out.println("/vuoto/empty - Crea un tavoliere vuoto");
+        System.out.println("/tavoliere/table -  Mostra il tavoliere di gioco");
+        System.out.println("/qualimosse/moves - Mostra le mosse disponibili");
+        System.out.println("/abbandona/giveup -  Abbandona la partita in corso");
         System.out.println("\nLista di comandi eseguibili dopo l'avvio di una partita: \n");
-        System.out.println("/abbandona - Abbandona la partita in corso");
+        System.out.println("/aiuto/help - Mostra l'elenco dei comandi disponibili");
+        System.out.println("/tavoliere/table - Mostra il tavoliere di gioco");
+        System.out.println("/abbandona/giveup - Abbandona la partita in corso");
+        System.out.println("/qualimosse/moves - Mostra le mosse disponibili");
 
     }
 
@@ -185,10 +188,12 @@ public final class App {
 
     public static void handleGiveUp(final Scanner input, final Scanner value, final CommandType command) {
         System.out.println("Sicuro di voler abbandonare la partita? (si/no) > ");
-        String choice = input.nextLine().trim();
+        String choice = input.next().trim();
         if (choice.equalsIgnoreCase("si")) {
             System.out.println("\nOk! Hai deciso di abbandonare la partita.");
             game.setStateGame(false); // Imposta lo stato del gioco a falso per terminare la partita
+            System.out.println("\nVince il bianco per abbandono!");
+            System.out.println("Pedine rimanenti: 2");
             return; // Uscita immediata dal metodo per evitare ulteriori stampa della mappa
         } else if (choice.equalsIgnoreCase("no")) {
             System.out.println("\nLa partita continua. Puoi effettuare nuovi tentativi.");

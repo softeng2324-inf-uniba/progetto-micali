@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
         SHOW_MOVES(new Pattern[] {Pattern.compile("^\\/qualimosse$"),
             Pattern.compile("^\\/moves$")}),
         GIVE_UP(new Pattern[] {Pattern.compile("^\\/abbandona$"),
-            Pattern.compile("^\\/give up$")});   
+            Pattern.compile("^\\/giveup$")});   
 
         private final Set<Pattern> compiled;
 
