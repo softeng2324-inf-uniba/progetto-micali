@@ -4,27 +4,63 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-    public enum CommandType {
-        START(new Pattern[] {Pattern.compile("^\\/gioca$"),
-            Pattern.compile("^\\/play$")}),
-        EXIT(new Pattern[] {Pattern.compile("^\\/esci$"),
-            Pattern.compile("^\\/exit$")}),
-        HELP(new Pattern[] {Pattern.compile("^\\/aiuto$"),
-            Pattern.compile("^\\/help$"),
-            Pattern.compile("^\\--help$"),
-            Pattern.compile("^\\-h$")}),   
-        EMPTY(new Pattern[] {Pattern.compile("^\\/vuoto$"),
-            Pattern.compile("^\\/empty$")}),
-        TABLE(new Pattern[] {Pattern.compile("^\\/tavoliere$"),
-            Pattern.compile("^\\/table$")}),
-        SHOW_MOVES(new Pattern[] {Pattern.compile("^\\/qualimosse$"),
-            Pattern.compile("^\\/moves$")}),
-        GIVE_UP(new Pattern[] {Pattern.compile("^\\/abbandona$"),
-            Pattern.compile("^\\/give up$")});   
+/**
+ * Enum representing different types of commands.
+ */
+public enum CommandType {
 
-        private final Set<Pattern> compiled;
+    /**
+     * Command to start the game.
+     */
+    START(new Pattern[] {Pattern.compile("^\\/gioca$"),
+        Pattern.compile("^\\/play$")}),
 
-        CommandType(final Pattern[] commcompiled) throws IllegalArgumentException {
+    /**
+     * Command to exit the game.
+     */
+    EXIT(new Pattern[] {Pattern.compile("^\\/esci$"),
+        Pattern.compile("^\\/exit$")}),
+
+    /**
+     * Command to get help.
+     */
+    HELP(new Pattern[] {Pattern.compile("^\\/aiuto$"),
+        Pattern.compile("^\\/help$"),
+        Pattern.compile("^\\--help$"),
+        Pattern.compile("^\\-h$")}),
+
+    /**
+     * Command for an empty action.
+     */
+    EMPTY(new Pattern[] {Pattern.compile("^\\/vuoto$"),
+        Pattern.compile("^\\/empty$")}),
+
+    /**
+     * Command to display the game table.
+     */
+    TABLE(new Pattern[] {Pattern.compile("^\\/tavoliere$"),
+        Pattern.compile("^\\/table$")}),
+
+    /**
+     * Command to show available moves.
+     */
+    SHOW_MOVES(new Pattern[] {Pattern.compile("^\\/qualimosse$"),
+        Pattern.compile("^\\/moves$")}),
+
+    /**
+     * Command to give up the game.
+     */
+    GIVE_UP(new Pattern[] {Pattern.compile("^\\/abbandona$"),
+        Pattern.compile("^\\/giveup$")});
+
+    private final Set<Pattern> compiled;
+
+    /**
+     * Constructor for CommandType enum.
+     * @param commcompiled an array of compiled patterns representing the command aliases
+     * @throws IllegalArgumentException if the commcompiled array is empty
+     */
+    CommandType(final Pattern[] commcompiled) throws IllegalArgumentException {
         if (commcompiled.length == 0) {
             throw new IllegalArgumentException(
                     "compiled deve contenere almeno un elemento.");
@@ -32,11 +68,12 @@ import java.util.regex.Pattern;
         this.compiled = new HashSet<>(Arrays.asList(commcompiled));
     }
 
-     /**
-     * @return Set di stringhe che rappresenta gli alias dei comandi.
+    /**
+     * Get the set of compiled patterns representing the command aliases.
+     * @return a set of patterns
      */
     public HashSet<Pattern> getCommandPattern() {
         return new HashSet<>(this.compiled);
     }
-  }
+}
 
