@@ -112,7 +112,10 @@ public final class App {
         System.out.println("/qualimosse/moves - Mostra le mosse disponibili");
         System.out.println("/abbandona/giveup -  Abbandona la partita in corso");
         System.out.println("\nLista di comandi eseguibili dopo l'avvio di una partita: \n");
-        System.out.println("/abbandona - Abbandona la partita in corso");
+        System.out.println("/aiuto/help - Mostra l'elenco dei comandi disponibili");
+        System.out.println("/tavoliere/table - Mostra il tavoliere di gioco");
+        System.out.println("/abbandona/giveup - Abbandona la partita in corso");
+        System.out.println("/qualimosse/moves - Mostra le mosse disponibili");
 
     }
 
