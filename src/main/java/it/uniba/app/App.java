@@ -76,6 +76,7 @@ public final class App {
         POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
         POST_COMMAND.put(CommandType.SHOW_MOVES, App::handleShowMoves);
         POST_COMMAND.put(CommandType.HELP, App::handleHelp);
+        POST_COMMAND.put(CommandType.TABLE, App::handleTable);
        }
 
 
@@ -165,18 +166,19 @@ public final class App {
 
     public static void handleExit(final Scanner input , final Scanner value , final CommandType command) throws IOException {
         
-        Scanner choice = new Scanner(System.in);
-        System.out.println("Sei sicuro di voler uscire dal gioco? (s/n)");
-        while (exit == false) {
-            String risposta = choice.next().toLowerCase().trim();
-            if (risposta.equals("s")) {
-                exit = true;
-            } else if (risposta.equals("n")) {
-                exit = false; 
-                break;             
-            } else {
-                System.out.println("Risposta non valida, riprova");
-            }            
+        try (Scanner choice = new Scanner(System.in)) {
+            System.out.println("Sei sicuro di voler uscire dal gioco? (s/n)");
+            while (exit == false) {
+                String risposta = choice.next().toLowerCase().trim();
+                if (risposta.equals("s")) {
+                    exit = true;
+                } else if (risposta.equals("n")) {
+                    exit = false; 
+                    break;             
+                } else {
+                    System.out.println("Risposta non valida, riprova");
+                }            
+            }
         }
     }  
 
@@ -214,4 +216,8 @@ public final class App {
                              "b) in arancione raggiungibili con mosse che consentono un salto ");     
     }
 
+
+    public static void handleTable(final Scanner input, final Scanner value, final CommandType command) {
+        game.getTable().printMap();
+    }
 }
