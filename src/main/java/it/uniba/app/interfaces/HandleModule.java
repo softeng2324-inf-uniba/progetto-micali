@@ -6,13 +6,13 @@ import java.util.Scanner;
 
 public interface HandleModule {
     /**
-     * Funzione richiamata per gestire il comando.
+     * method for handling the command
      * @param input
      * @param value
      * @param command
      * @throws java.io.IOException
      */
      void handle(Scanner input, Scanner value, CommandType command) throws IOException;
-        // Method implementation goes here
+        
     
 }

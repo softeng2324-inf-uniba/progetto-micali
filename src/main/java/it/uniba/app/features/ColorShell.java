@@ -1,5 +1,8 @@
 package it.uniba.app.features;
 
+/**
+ * The ColorShell enum represents different colors that can be used in a shell or console output.
+ */
 public enum ColorShell {
     BLACK("\033[0;30m"),   // BLACK
     RED("\033[0;31m"),     // RED
@@ -18,14 +21,19 @@ public enum ColorShell {
 
     private final String color;
 
+    /**
+     * Constructs a ColorShell enum constant with the specified color escape sequence.
+     * @param col The color escape sequence.
+     */
     ColorShell(final String col) {
         this.color = col;
     }
 
-    /** Il metodo restituisce la stringa di escape di caratteri Unicode utilizzato dall'enumerativo corrispondente.
-     * @return Il la stringa che indica il colore dell'enumerativo corrispondente.
+    /**
+     * Returns the color escape sequence associated with the ColorShell enum constant.
+     * @return The color escape sequence.
      */
     public String getValue() {
         return this.color;
-    }  
+    }
 }
