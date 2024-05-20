@@ -44,7 +44,7 @@ public final class App {
         System.out.println("/help per avere un aiuto !");
     }
 
-            /**
+    /**
      * Metodo che controlla se il comando inserito dall'utente è presente tra i
      * comandi disponibili.
      *
@@ -72,6 +72,7 @@ public final class App {
         PRE_COMMAND.put(CommandType.HELP,  App::handleHelp);
         PRE_COMMAND.put(CommandType.EXIT,  App::handleExit);
         PRE_COMMAND.put(CommandType.START, App::handlePlay);
+        //PRE_COMMAND.put(CommandType.TABLE, App::handleBoard);
         PRE_COMMAND.put(CommandType.EMPTY, App::handleEmpty);
         POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
         POST_COMMAND.put(CommandType.SHOW_MOVES, App::handleShowMoves);
@@ -111,10 +112,7 @@ public final class App {
         System.out.println("/qualimosse/moves - Mostra le mosse disponibili");
         System.out.println("/abbandona/giveup -  Abbandona la partita in corso");
         System.out.println("\nLista di comandi eseguibili dopo l'avvio di una partita: \n");
-        System.out.println("/aiuto/help - Mostra l'elenco dei comandi disponibili");
-        System.out.println("/tavoliere/table - Mostra il tavoliere di gioco");
-        System.out.println("/abbandona/giveup - Abbandona la partita in corso");
-        System.out.println("/qualimosse/moves - Mostra le mosse disponibili");
+        System.out.println("/abbandona - Abbandona la partita in corso");
 
     }
 
@@ -134,14 +132,14 @@ public final class App {
         while (game.getStateGame()) {
             try {
                 System.out.print("\n | GAME | : ");
-                String inputPlay = input.nextLine().toLowerCase().trim();
+                String inputPlay = input.next().toLowerCase().trim();
                 CommandType commPlay = checkCommand(POST_COMMAND, inputPlay);
                 if (commPlay != null) {
                     HandleModule handler = POST_COMMAND.get(commPlay);
                     if (handler != null) {
                         try {
                             handler.handle(input, new Scanner(inputPlay), commPlay);
-                            if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP)) {
+                            if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP ) && !commPlay.equals(CommandType.TABLE)) {
                                 game.getTable().printMap();  // Aggiungi questa riga se vuoi ristampare il tavoliere dopo ogni comando
                             }
                         } catch (IOException e) {
@@ -201,17 +199,4 @@ public final class App {
             System.out.println("\nScelta non valida, riprova..");
         }
     }
-
-
-
-     public static void handleShowMoves(final Scanner input, final Scanner value, final CommandType command)
-            throws IOException {
-         System.out.println("\n Mosse disponibili : ");
-         table.setupGioco();
-         table.setColor();            
-         table.printMap(); 
-         System.out.println("\na) in giallo le caselle raggiungibili con mosse che generano una nuova pedina\r\n" + //
-                             "b) in arancione raggiungibili con mosse che consentono un salto ");     
-    }
-
 }
