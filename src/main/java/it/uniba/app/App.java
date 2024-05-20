@@ -45,7 +45,7 @@ public final class App {
         System.out.println("/help per avere un aiuto !");
     }
 
-            /**
+    /**
      * Metodo che controlla se il comando inserito dall'utente è presente tra i
      * comandi disponibili.
      *
@@ -73,7 +73,7 @@ public final class App {
         PRE_COMMAND.put(CommandType.HELP,  App::handleHelp);
         PRE_COMMAND.put(CommandType.EXIT,  App::handleExit);
         PRE_COMMAND.put(CommandType.START, App::handlePlay);
-        //PRE_COMMAND.put(CommandType.TABLE, App::handleBoard);
+        POST_COMMAND.put(CommandType.TABLE, App::handleTable);
         PRE_COMMAND.put(CommandType.EMPTY, App::handleEmpty);
         //PRE_COMMAND.put(CommandType.MOVES, App::handleShoWMoves);
         POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
@@ -115,7 +115,7 @@ public final class App {
         System.out.println("/abbandona -  Abbandona la partita in corso");
         System.out.println("\nLista di comandi eseguibili dopo l'avvio di una partita: \n");
         System.out.println("/abbandona - Abbandona la partita in corso");
-
+        
     }
 
     public static void handlePlay(final Scanner input, final Scanner value, final CommandType command) {
@@ -134,14 +134,14 @@ public final class App {
         while (game.getStateGame()) {
             try {
                 System.out.print("\n | GAME | : ");
-                String inputPlay = input.nextLine().toLowerCase().trim();
+                String inputPlay = input.next().toLowerCase().trim();
                 CommandType commPlay = checkCommand(POST_COMMAND, inputPlay);
                 if (commPlay != null) {
                     HandleModule handler = POST_COMMAND.get(commPlay);
                     if (handler != null) {
                         try {
                             handler.handle(input, new Scanner(inputPlay), commPlay);
-                            if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP)) {
+                            if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP ) && !commPlay.equals(CommandType.TABLE)) {
                                 game.getTable().printMap();  // Aggiungi questa riga se vuoi ristampare il tavoliere dopo ogni comando
                             }
                         } catch (IOException e) {
@@ -188,7 +188,7 @@ public final class App {
 
     public static void handleGiveUp(final Scanner input, final Scanner value, final CommandType command) {
         System.out.println("Sicuro di voler abbandonare la partita? (si/no) > ");
-        String choice = input.nextLine().trim();
+        String choice = input.next().trim();
         if (choice.equalsIgnoreCase("si")) {
             System.out.println("\nOk! Hai deciso di abbandonare la partita.");
             game.setStateGame(false); // Imposta lo stato del gioco a falso per terminare la partita
@@ -198,5 +198,9 @@ public final class App {
         } else {
             System.out.println("\nScelta non valida, riprova..");
         }
+    }
+
+    public static void handleTable(final Scanner input, final Scanner value, final CommandType command) {
+        game.getTable().printMap();
     }
 }
