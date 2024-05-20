@@ -56,4 +56,29 @@ public class Table {
         }
         System.out.println("   a   b   c   d   e   f   g");
     }
+
+  
+    
+    public void setColor(){
+
+        map[0][1] = new Pawn("color", ' ', "\u001B[43m", 0, 0);
+        map[1][0] = new Pawn("color", ' ', "\u001B[43m", 0, 0);
+        map[1][1] = new Pawn("color", ' ', "\u001B[43m", 0, 0);
+        map[0][2] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);
+        map[1][2] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);
+        map[2][0] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);
+        map[2][1] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);
+        map[2][2] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);
+        map[2][0] = new Pawn("color", ' ', "\u001B[48;5;202m", 2, 0);
+        map[4][4] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);
+        map[4][5] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);        
+        map[4][6] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);
+        map[5][4] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);
+        map[6][4] = new Pawn("color", ' ', "\u001B[48;5;202m", 0, 0);
+        map[5][5] = new Pawn("color", ' ', "\u001B[43m", 0, 0);
+        map[5][6] = new Pawn("color", ' ', "\u001B[43m", 0, 0);
+        map[6][5] = new Pawn("color", ' ', "\u001B[43m", 0, 0);
+    }
+    
+
 }
