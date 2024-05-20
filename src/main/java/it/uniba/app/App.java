@@ -72,7 +72,6 @@ public final class App {
         PRE_COMMAND.put(CommandType.HELP,  App::handleHelp);
         PRE_COMMAND.put(CommandType.EXIT,  App::handleExit);
         PRE_COMMAND.put(CommandType.START, App::handlePlay);
-        //PRE_COMMAND.put(CommandType.TABLE, App::handleBoard);
         PRE_COMMAND.put(CommandType.EMPTY, App::handleEmpty);
         POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
         POST_COMMAND.put(CommandType.SHOW_MOVES, App::handleShowMoves);
@@ -202,4 +201,17 @@ public final class App {
             System.out.println("\nScelta non valida, riprova..");
         }
     }
+
+
+
+     public static void handleShowMoves(final Scanner input, final Scanner value, final CommandType command)
+            throws IOException {
+         System.out.println("\n Mosse disponibili : ");
+         table.setupGioco();
+         table.setColor();            
+         table.printMap(); 
+         System.out.println("\na) in giallo le caselle raggiungibili con mosse che generano una nuova pedina\r\n" + //
+                             "b) in arancione raggiungibili con mosse che consentono un salto ");     
+    }
+
 }
