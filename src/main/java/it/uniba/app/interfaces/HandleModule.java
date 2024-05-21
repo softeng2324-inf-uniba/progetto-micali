@@ -4,15 +4,17 @@ import it.uniba.app.features.CommandType;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * <p>Interface for handling commands.</p>
+ */
 public interface HandleModule {
     /**
-     * method for handling the command
-     * @param input
-     * @param value
-     * @param command
-     * @throws java.io.IOException
+     * Method for handling the command.
+     *
+     * @param input the Scanner object for user input
+     * @param value the Scanner object for additional values
+     * @param command the command type to handle
+     * @throws IOException if an I/O error occurs
      */
-     void handle(Scanner input, Scanner value, CommandType command) throws IOException;
-        
-    
+    void handle(Scanner input, Scanner value, CommandType command) throws IOException;
 }

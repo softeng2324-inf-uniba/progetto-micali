@@ -1,25 +1,18 @@
 package it.uniba.app;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.nio.charset.StandardCharsets;
+
 import it.uniba.app.elements.Game;
 import it.uniba.app.elements.Table;
 import it.uniba.app.features.ColorShell;
+import it.uniba.app.features.CommandType;
 import it.uniba.app.features.ViewResult;
 import it.uniba.app.interfaces.HandleModule;
-
-import java.io.IOException;
-import java.util.Scanner;
-import it.uniba.app.features.CommandType;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.regex.Pattern;
-
-
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.io.IOException;
 
 /**
  * <Boundary> Class
@@ -27,11 +20,15 @@ import java.io.IOException;
  */
 public final class App {
 
-    public static boolean exit = false;
-    public static final Map<CommandType, HandleModule> PRE_COMMAND = new HashMap<>();
-    public static final Map<CommandType, HandleModule> POST_COMMAND = new HashMap<>();
-    public static final Table table = Table.getInstance(7);
-    private static Game game;
+    private App() {
+        throw new AssertionError("Non istanziare una classe di utilità");
+    }
+
+    private static boolean exit = false;
+    private static final Map<CommandType, HandleModule> PRE_COMMAND = new HashMap<>();
+    private static final Map<CommandType, HandleModule> POST_COMMAND = new HashMap<>();
+    public static final Table TAVOLIERE = Table.getInstance(7); // Renamed to TABLE
+    private static volatile Game game;
 
     /**
      * Get a greeting sentence.
@@ -79,10 +76,6 @@ public final class App {
         }
         return null;
     }
-
-    /**
-     * Initialize the map of available commands for the game.
-     */
     static {
         PRE_COMMAND.put(CommandType.HELP,  App::handleHelp);
         PRE_COMMAND.put(CommandType.EXIT,  App::handleExit);
@@ -100,7 +93,7 @@ public final class App {
      * @param args the command line arguments.
      */
     public static void main(final String[] args) {
-        try (Scanner scanner = new Scanner(System.in)) {
+        try (Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8)) {
             printWelcome(ColorShell.RED);
             while (!exit) {
                 System.out.print("\nMENU : ");
@@ -108,7 +101,7 @@ public final class App {
                 CommandType command = checkCommand(PRE_COMMAND, input);
                 if (command != null) {
                     HandleModule handler = PRE_COMMAND.get(command);
-                    handler.handle(scanner, new Scanner(input), command);
+                    handler.handle(scanner, new Scanner(input), command); // Non è necessario specificare il charset qui
                 } else {
                     System.out.println("Comando non valido, riprova");
                 }
@@ -127,8 +120,9 @@ public final class App {
      * @param command the command type.
      * @throws IOException if an I/O error occurs.
      */
-    public static void handleHelp(final Scanner input , final Scanner value , final CommandType command) throws IOException {
-        System.out.println("Comandi disponibili: ");
+    public static void handleHelp(final Scanner input, final Scanner value, final CommandType command)
+     throws IOException {
+        System.out.println("\nComandi disponibili: ");
         System.out.println("/gioca/play - Inizia una nuova partita");
         System.out.println("/esci/exit -  Termina il gioco");
         System.out.println("/aiuto/help - Mostra l'elenco dei comandi disponibili");
@@ -150,7 +144,8 @@ public final class App {
      * @param value   the value scanner.
      * @param command the command type.
      */
-    public static void handlePlay(final Scanner input, final Scanner value, final CommandType command) {
+    public static synchronized void handlePlay(final Scanner input, final Scanner value, final CommandType command)
+     throws IOException {
         if (command == CommandType.START) {
             if (game == null || !game.getStateGame()) {
                 game = new Game();  // Crea una nuova istanza di Game
@@ -158,11 +153,11 @@ public final class App {
                 game.getTable().setupGioco();  // Configura il tavoliere per un nuovo gioco
                 game.getTable().printMap();  // Stampa il tavoliere
             } else {
-                System.out.println("Una partita è già in corso. Terminare la partita corrente prima di iniziarne una nuova.");
+                System.out.println("Una partita è già in corso. Terminare la partita corrente \n"
+                + "prima di iniziarne una nuova.");
                 return;
             }
         }
-
         while (game.getStateGame()) {
             try {
                 System.out.print("\n | GAME | : ");
@@ -173,8 +168,9 @@ public final class App {
                     if (handler != null) {
                         try {
                             handler.handle(input, new Scanner(inputPlay), commPlay);
-                            if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP ) && !commPlay.equals(CommandType.TABLE)) {
-                                game.getTable().printMap();  // Aggiungi questa riga se vuoi ristampare il tavoliere dopo ogni comando
+                            if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP)
+                                && !commPlay.equals(CommandType.TABLE)) {
+                                game.getTable().printMap(); // Spostata questa linea all'interno del blocco
                             }
                         } catch (IOException e) {
                             System.out.println("Errore di I/O: " + e.getMessage());
@@ -202,23 +198,25 @@ public final class App {
      * @param command the command type.
      * @throws IOException if an I/O error occurs.
      */
-    public static void handleExit(final Scanner input , final Scanner value , final CommandType command) throws IOException {
-
-        try (Scanner choice = new Scanner(System.in)) {
-            System.out.println("Sei sicuro di voler uscire dal gioco? (s/n)");
-            while (exit == false) {
-                String risposta = choice.next().toLowerCase().trim();
-                if (risposta.equals("s")) {
-                    exit = true;
-                } else if (risposta.equals("n")) {
-                    exit = false;
-                    break;
-                } else {
-                    System.out.println("Risposta non valida, riprova");
-                }
+    public static void handleExit(final Scanner input, final Scanner value, final CommandType command)
+     throws IOException {
+    try (Scanner choice = new Scanner(System.in, StandardCharsets.UTF_8.name())) {
+        System.out.println("Sei sicuro di voler uscire dal gioco? (s/n)");
+        while (!exit) {
+            String risposta = choice.next().toLowerCase().trim();
+            if (risposta.equals("s")) {
+                System.out.println("\nArrivederci e grazie per aver giocato con noi!");
+                System.out.println("Chiusura in corso...");
+                exit = true;
+            } else if (risposta.equals("n")) {
+                exit = false;
+                break;
+            } else {
+                System.out.println("Risposta non valida, riprova");
             }
         }
     }
+}
 
     /**
      * Handle the empty command.
@@ -228,9 +226,10 @@ public final class App {
      * @param command the command type.
      * @throws IOException if an I/O error occurs.
      */
-    public static void handleEmpty(final Scanner input , final Scanner value , final CommandType command)throws IOException{
-        table.resetMap();
-        table.printMap();
+    public static void handleEmpty(final Scanner input, final Scanner value, final CommandType command)
+     throws IOException {
+        TAVOLIERE.resetMap();
+        TAVOLIERE.printMap();
     }
 
     /**
@@ -240,7 +239,8 @@ public final class App {
      * @param value   the value scanner.
      * @param command the command type.
      */
-    public static void handleGiveUp(final Scanner input, final Scanner value, final CommandType command) {
+    public static void handleGiveUp(final Scanner input, final Scanner value, final CommandType command)
+     throws IOException {
         System.out.println("Sicuro di voler abbandonare la partita? (si/no) > ");
         String choice = input.next().trim();
         if (choice.equalsIgnoreCase("si")) {
@@ -265,13 +265,12 @@ public final class App {
      * @throws IOException if an I/O error occurs.
      */
     public static void handleShowMoves(final Scanner input, final Scanner value, final CommandType command)
-            throws IOException {
-        System.out.println("\n Mosse disponibili : ");
-        table.setupGioco();
-        table.setColor();
-        table.printMap();
-        System.out.println("\na) in giallo le caselle raggiungibili con mosse che generano una nuova pedina\r\n" + //
-                "b) in arancione raggiungibili con mosse che consentono un salto ");
+        throws IOException {
+        System.out.println("\na)in giallo le caselle raggiungibili con mosse che generano una nuova pedina\n"
+        + "b) in arancione raggiungibili con mosse che consentono un salto");
+        TAVOLIERE.setupGioco();
+        TAVOLIERE.setColor();
+        TAVOLIERE.printMap2();
     }
 
     /**
@@ -281,7 +280,8 @@ public final class App {
      * @param value   the value scanner.
      * @param command the command type.
      */
-    public static void handleTable(final Scanner input, final Scanner value, final CommandType command) {
+    public static void handleTable(final Scanner input, final Scanner value, final CommandType command)
+     throws IOException {
         game.getTable().printMap();
     }
 }
