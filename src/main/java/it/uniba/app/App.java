@@ -199,24 +199,28 @@ public final class App {
      * @throws IOException if an I/O error occurs.
      */
     public static void handleExit(final Scanner input, final Scanner value, final CommandType command)
-     throws IOException {
-    try (Scanner choice = new Scanner(System.in, StandardCharsets.UTF_8.name())) {
-        System.out.println("Sei sicuro di voler uscire dal gioco? (s/n)");
-        while (!exit) {
-            String risposta = choice.next().toLowerCase().trim();
-            if (risposta.equals("s")) {
-                System.out.println("\nArrivederci e grazie per aver giocato con noi!");
-                System.out.println("Chiusura in corso...");
-                exit = true;
-            } else if (risposta.equals("n")) {
-                exit = false;
-                break;
-            } else {
-                System.out.println("Risposta non valida, riprova");
+            throws IOException {
+        boolean handleLoop = true;
+        while (handleLoop) {
+            System.out.print("\nSicuro di voler uscire? (si/no) > ");
+            String choice = input.next();
+            choice = choice.trim();
+            switch (choice.toLowerCase()) {
+                case "si" -> {
+                    System.out.println("\nArrivederci e grazie per aver giocato con noi!");
+                    System.out.println("Chiusura in corso..");
+                    exit = true;
+                    handleLoop = false;
+                }
+                case "no" -> {
+                    System.out.println("\nTornando al menu principale..");
+                    handleLoop = false;
+                }
+                default -> System.out.println("\nScelta non valida, riprova..");
             }
         }
     }
-}
+
 
     /**
      * Handle the empty command.
