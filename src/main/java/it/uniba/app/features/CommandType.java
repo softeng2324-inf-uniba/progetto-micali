@@ -4,7 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-/**
+/**<Entity> class
+ *
  * Enum representing different types of commands.
  */
 public enum CommandType {

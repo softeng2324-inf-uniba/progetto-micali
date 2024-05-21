@@ -1,31 +1,40 @@
 package it.uniba.app.elements;
 
 /**
- * Class representing a pawn in the game.
+ * Class representing a pawn in the game. This class is immutable.
  */
-
 public class Pawn {
-    private String owner;            // Who owns the pawn
-    private char unicodeCharacter;   // Unicode representation of the pawn
-    private String color;            // Color code for visualization
-    private int x;                   // x position (row)
-    private int y;                   // y position (column)
+    /** Who owns the pawn. */
+    private final String owner;
+
+    /** Unicode representation of the pawn. */
+    private final char unicodeCharacter;
+
+    /** Color code for visualization. */
+    private final String color;
+
+    /** x position (row). */
+    private final int x;
+
+    /** y position (column). */
+    private final int y;
 
     /**
      * Constructs a new Pawn object with the specified owner, unicode character, color, x position, and y position.
      *
-     * @param owner The owner of the pawn
-     * @param unicodeCharacter The Unicode character of the pawn
-     * @param color The color code of the pawn
-     * @param x The x position of the pawn
-     * @param y The y position of the pawn
+     * @param pawnOwner The owner of the pawn
+     * @param unicodeChar The Unicode character of the pawn
+     * @param pawnColor The color code of the pawn
+     * @param posX The x position of the pawn
+     * @param posY The y position of the pawn
      */
-    public Pawn(String owner, char unicodeCharacter, String color, int x, int y) {
-        this.owner = owner;
-        this.unicodeCharacter = unicodeCharacter;
-        this.color = color;
-        this.x = x;
-        this.y = y;
+    public Pawn(final String pawnOwner, final char unicodeChar, final String pawnColor,
+                final int posX, final int posY) {
+        this.owner = pawnOwner;
+        this.unicodeCharacter = unicodeChar;
+        this.color = pawnColor;
+        this.x = posX;
+        this.y = posY;
     }
 
     /**
@@ -65,29 +74,11 @@ public class Pawn {
     }
 
     /**
-     * Sets the x position of the pawn.
-     *
-     * @param x The new x position of the pawn
-     */
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    /**
      * Returns the y position of the pawn.
      *
      * @return The y position of the pawn
      */
     public int getY() {
         return y;
-    }
-
-    /**
-     * Sets the y position of the pawn.
-     *
-     * @param y The new y position of the pawn
-     */
-    public void setY(int y) {
-        this.y = y;
     }
 }

@@ -1,9 +1,10 @@
 package it.uniba.app.features;
 
 /**
- * Enum representing different view results.
+ * <p>Enum representing different view results.</p>
  */
 public enum ViewResult {
+    /** Welcome message with red color. */
     WELCOME("\n"
     + "   _____    __                           \n"
     + "  /  _  \\ _/  |_ _____   ___  ______  ___\n"
@@ -21,7 +22,7 @@ public enum ViewResult {
      * @param value the message associated with the enum
      * @param enumColor the color associated with the enum
      */
-    ViewResult(final String value, final ColorShell enumColor){
+    ViewResult(final String value, final ColorShell enumColor) {
         this.msg = value;
         this.color = enumColor;
     }

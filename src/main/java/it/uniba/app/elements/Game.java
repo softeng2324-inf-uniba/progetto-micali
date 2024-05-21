@@ -1,21 +1,25 @@
 package it.uniba.app.elements;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
+ * <Entity> class
  * The Game class represents a game instance.
  */
 public class Game {
 
     private boolean stateGame = false;
+    private static final int MAX_SIZE = 7;
 
-    private Table table = new Table(7);
+    private final Table table;
 
     /**
      * Constructs a new Game instance.
      * The initial state of the game is set to false.
      */
     public Game() {
-        stateGame = false;
+        this.stateGame = false;
+        this.table = Table.getInstance(MAX_SIZE); // Usa il singleton per ottenere l'istanza di Table
     }
 
     /**
@@ -23,6 +27,7 @@ public class Game {
      *
      * @return The table object.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Table is immutable and safe to return")
     public Table getTable() {
         return table;
     }
@@ -39,9 +44,9 @@ public class Game {
     /**
      * Sets the state of the game.
      *
-     * @param stateGame The new state of the game.
+     * @param newStateGame The new state of the game.
      */
-    public void setStateGame(boolean stateGame) {
-        this.stateGame = stateGame;
+    public void setStateGame(final boolean newStateGame) {
+        this.stateGame = newStateGame;
     }
 }
