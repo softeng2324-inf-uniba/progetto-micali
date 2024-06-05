@@ -1,25 +1,33 @@
 package it.uniba.app.elements;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * <Entity> class
  * The Game class represents a game instance.
  */
 public class Game {
-
     private boolean stateGame = false;
     private static final int MAX_SIZE = 7;
-
     private final Table table;
+    private final TurnManager turnManager;
+    //private List<String> whiteMoves;
+    //private List<String> blackMoves;
+    private Player winner;
 
     /**
      * Constructs a new Game instance.
      * The initial state of the game is set to false.
+     *
+     * @param whitePlayer The player with the white pawns.
+     * @param blackPlayer The player with the black pawns.
      */
-    public Game() {
+    public Game(Player whitePlayer, Player blackPlayer) {
         this.stateGame = false;
-        this.table = Table.getInstance(MAX_SIZE); // Usa il singleton per ottenere l'istanza di Table
+        this.table = Table.getInstance(MAX_SIZE);
+        this.turnManager = new TurnManager(whitePlayer, blackPlayer);
+        //this.whiteMoves = new ArrayList<>();
+        //this.blackMoves = new ArrayList<>();
     }
 
     /**
@@ -27,7 +35,6 @@ public class Game {
      *
      * @return The table object.
      */
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Table is immutable and safe to return")
     public Table getTable() {
         return table;
     }
@@ -48,5 +55,48 @@ public class Game {
      */
     public void setStateGame(final boolean newStateGame) {
         this.stateGame = newStateGame;
+    }
+
+    /**
+     * Retrieves the current player from the turn manager.
+     *
+     * @return The current player.
+     */
+    public Player getCurrentPlayer() {
+        Player currentPlayer = turnManager.getCurrentPlayer();
+        System.out.println("Current player in the game: " + currentPlayer.getName() + " (" + currentPlayer.getColor() + ")");
+        return currentPlayer;
+    }
+
+    /**
+     * Retrieves the move manager for the game.
+     *
+     * @return The move manager.
+     */
+    public MoveManager getMoveManager() {
+        return new MoveManager(table, turnManager, this);
+    }
+
+    /**
+     * Calculates the winner of the game due to forfeiture.
+     */
+    public void calculateWinnerDueToForfeit() {
+        Player currentPlayer = turnManager.getCurrentPlayer();
+        Player opponent = turnManager.getOpponent();
+        int currentPlayerCount = table.countPawns(currentPlayer.getColor());
+        int opponentPlayerCount = table.countPawns(opponent.getColor());
+
+        // Determine the winner based on pawn counts
+        winner = (currentPlayerCount > opponentPlayerCount) ? currentPlayer : opponent;
+    }
+
+    /**
+     * Displays the results of the game.
+     */
+    public void displayResults() {
+        // Display the final result of the game, including the winner and pawn count
+        System.out.println("Il vincitore è : " + winner.getName());
+        System.out.println("Pedine rimaste - " + winner.getName() + ": " + table.countPawns(winner.getColor()));
+        System.out.println("Pedine rimaste - " + turnManager.getOpponent().getName() + ": " + table.countPawns(turnManager.getOpponent().getColor()));
     }
 }
