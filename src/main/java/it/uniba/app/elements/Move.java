@@ -48,13 +48,4 @@ public class Move {
     public Player getPlayer() {
         return player;
     }
-
-    /**
-     * Checks if the move is a jump.
-     * A jump is defined as a move that spans two squares.
-     * @return true if the move is a jump, false otherwise.
-     */
-    public boolean isJump() {
-        return (Math.abs(start.getX() - end.getX()) == 2 || Math.abs(start.getY() - end.getY()) == 2);
-    }
 }
