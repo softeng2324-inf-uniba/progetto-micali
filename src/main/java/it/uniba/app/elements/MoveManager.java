@@ -10,7 +10,6 @@ public class MoveManager {
 
     /**
      * Constructs a MoveManager with the specified Table, TurnManager, and Game.
-     *
      * @param table       The table of the game.
      * @param turnManager The turn manager of the game.
      * @param game        The game object.
@@ -30,11 +29,12 @@ public class MoveManager {
     public boolean makeMove(Move move) {
         if (validateMove(move)) {
             executeMove(move);
+            convertAdjacentEnemies(move.getEnd());
             turnManager.nextTurn();  // Change turn after a valid move
-            System.out.println("Valid move made by " + turnManager.getCurrentPlayer().getName());
+            System.out.println("Mosse valida di : " + turnManager.getCurrentPlayer().getName());
             return true;
         }
-        System.out.println("Invalid move: " + move);
+        System.out.println("Mossa non valida: " + move);
         return false;
     }
 
@@ -113,5 +113,44 @@ public class MoveManager {
             // Normal move: duplicate the pawn at the destination position
             table.setPawnAt(endX, endY, new Pawn(movingPawn.getOwner(), movingPawn.getUnicodeCharacter(), movingPawn.getColor(), endX, endY));
         }
+    }
+
+    /** Method that converts adjacent enemies to the current player's color.
+     * @param end
+     */
+    private void convertAdjacentEnemies(Coordinate end) {
+        int[][] directions = {
+            {-1, -1}, {-1, 0}, {-1, 1},
+            {0, -1},         {0, 1},
+            {1, -1}, {1, 0}, {1, 1}
+        };
+    
+        String currentPlayerColor = turnManager.getCurrentPlayer().getColor();
+        char currentPlayerChar = currentPlayerColor.equals("bianco") ? '\u26C2' : '\u26C0';  // Aggiorna con i tuoi caratteri Unicode corretti
+    
+        for (int[] dir : directions) {
+            int checkX = end.getX() + dir[0];
+            int checkY = end.getY() + dir[1];
+    
+            if (isValidPosition(checkX, checkY)) {
+                Pawn targetPawn = table.getPawnAt(checkX, checkY);
+                if (targetPawn != null && targetPawn.getOwner().equals(turnManager.getOpponent().getColor())) {
+                    // Conversione della pedina
+                    Pawn newPawn = new Pawn(currentPlayerColor, currentPlayerChar, targetPawn.getColor(), checkX, checkY);
+                    table.setPawnAt(checkX, checkY, newPawn);
+                    System.out.println("Converted pawn at (" + checkX + ", " + checkY + ") to " + currentPlayerColor);
+                }
+            }
+        }
+    }   
+
+    /** 
+     * Method that checks if a position is valid.
+     * @param x
+     * @param y
+     * @return boolean
+     */
+    private boolean isValidPosition(int x, int y) {
+        return x >= 0 && x < table.getSize() && y >= 0 && y < table.getSize();
     }
 }
