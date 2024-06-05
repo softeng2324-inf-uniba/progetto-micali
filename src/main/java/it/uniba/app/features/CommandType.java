@@ -54,7 +54,7 @@ public enum CommandType {
     GIVE_UP(new Pattern[] {Pattern.compile("^\\/abbandona$"),
         Pattern.compile("^\\/giveup$")}),
 
-        CAPTURE(new Pattern[] {Pattern.compile("^[a-g][1-7]-[a-g][1-7]$")});
+    CAPTURE(new Pattern[] {Pattern.compile("^[a-g][1-7]-[a-g][1-7]$")});
 
     private final Set<Pattern> compiled;
 
