@@ -52,7 +52,9 @@ public enum CommandType {
      * Command to give up the game.
      */
     GIVE_UP(new Pattern[] {Pattern.compile("^\\/abbandona$"),
-        Pattern.compile("^\\/giveup$")});
+        Pattern.compile("^\\/giveup$")}),
+
+        CAPTURE(new Pattern[] {Pattern.compile("^[a-g][1-7]-[a-g][1-7]$")});
 
     private final Set<Pattern> compiled;
 

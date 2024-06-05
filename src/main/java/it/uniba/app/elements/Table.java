@@ -154,4 +154,75 @@ public final class Table {
         }
         System.out.println("   a   b   c   d   e   f   g");
     }
+
+    /**
+    * Retrieves the pawn at the specified position.
+    *
+    * @param x The x coordinate (row) of the pawn.
+    * @param y The y coordinate (column) of the pawn.
+    * @return The pawn at the specified position, or null if there is no pawn.
+    */
+    public Pawn getPawnAt(int x, int y) {
+    if (x >= 0 && x < size && y >= 0 && y < size) {
+        return map[x][y];
+    }
+    return null; // Returns null if the coordinates are out of bounds.
+    }
+
+    /**
+    * Sets a pawn at a specified position on the board.
+    *
+    * @param x    The x coordinate (row) where to place the pawn.
+    * @param y    The y coordinate (column) where to place the pawn.
+    * @param pawn The pawn to be placed.
+    */
+    public void setPawnAt(int x, int y, Pawn pawn) {
+    if (x >= 0 && x < size && y >= 0 && y < size) {
+        map[x][y] = pawn; // Ensure this actually updates the array
+        System.out.println("Updated pawn at (" + x + ", " + y + ") to " + pawn.getOwner() + " with character " + pawn.getUnicodeCharacter());
+    } else {
+        System.out.println("Attempted to set pawn out of bounds at (" + x + ", " + y + ")");
+    }
+ }
+
+    /**
+    * Clears a pawn at a specified position on the board.
+    *
+    * @param x The x coordinate (row) of the pawn to clear.
+    * @param y The y coordinate (column) of the pawn to clear.
+    */
+    public void clearPawnAt(int x, int y) {
+    if (x >= 0 && x < size && y >= 0 && y < size) {
+        map[x][y] = new Pawn("", ' ', "", x, y); // Sets an empty pawn
+    }
+  }
+
+    /**
+    * Returns the size of the table.
+    *
+    * @return The size of the table.
+    */
+    public int getSize() {
+    return size;
+    }
+
+    /**
+    * Counts the pawns owned by the specified player.
+    *
+    * @param owner The owner of the pawns to count.
+    * @return The number of pawns owned by the specified player.
+    */
+    public int countPawns(String owner) {
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            Pawn pawn = getPawnAt(i, j);
+            if (pawn != null && pawn.getOwner().equals(owner)) {
+                count++;
+            }
+        }
+    }
+    System.out.println("Total pawns for owner " + owner + ": " + count);
+    return count;
+    }
 }

@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
 import java.nio.charset.StandardCharsets;
 
 import it.uniba.app.elements.Game;
+import it.uniba.app.elements.Move;
+import it.uniba.app.elements.MoveParser;
+import it.uniba.app.elements.Player;
 import it.uniba.app.elements.Table;
 import it.uniba.app.features.ColorShell;
 import it.uniba.app.features.CommandType;
@@ -85,6 +88,7 @@ public final class App {
         POST_COMMAND.put(CommandType.SHOW_MOVES, App::handleShowMoves);
         POST_COMMAND.put(CommandType.HELP, App::handleHelp);
         POST_COMMAND.put(CommandType.TABLE, App::handleTable);
+        POST_COMMAND.put(CommandType.CAPTURE, App::handleCapture);
     }
 
     /**
@@ -145,51 +149,44 @@ public final class App {
      * @param command the command type.
      */
     public static synchronized void handlePlay(final Scanner input, final Scanner value, final CommandType command)
-     throws IOException {
-        if (command == CommandType.START) {
-            if (game == null || !game.getStateGame()) {
-                game = new Game();  // Crea una nuova istanza di Game
-                game.setStateGame(true);  // Imposta lo stato del gioco a vero
-                game.getTable().setupGioco();  // Configura il tavoliere per un nuovo gioco
-                game.getTable().printMap();  // Stampa il tavoliere
-            } else {
-                System.out.println("Una partita è già in corso. Terminare la partita corrente \n"
-                + "prima di iniziarne una nuova.");
-                return;
-            }
-        }
-        while (game.getStateGame()) {
-            try {
-                System.out.print("\n | GAME | : ");
-                String inputPlay = input.next().toLowerCase().trim();
-                CommandType commPlay = checkCommand(POST_COMMAND, inputPlay);
-                if (commPlay != null) {
-                    HandleModule handler = POST_COMMAND.get(commPlay);
-                    if (handler != null) {
-                        try {
-                            handler.handle(input, new Scanner(inputPlay), commPlay);
-                            if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP)
-                                && !commPlay.equals(CommandType.TABLE)) {
-                                game.getTable().printMap(); // Spostata questa linea all'interno del blocco
-                            }
-                        } catch (IOException e) {
-                            System.out.println("Errore di I/O: " + e.getMessage());
-                        }
-                    }
-                } else {
-                    System.out.println("Comando non valido, riprova");
-                }
-            } catch (Exception e) {
-                System.out.println("Errore di I/O: " + e.getMessage());
-            }
-        }
-
-        // Aggiunta di questa riga per chiarire che il gioco è finito e si sta tornando al menu principale.
-        if (!game.getStateGame()) {
-            System.out.println("Tornando al menu principale...");
-        }
-    }
-
+    throws IOException {
+   if (command == CommandType.START) {
+       if (game == null || !game.getStateGame()) {
+           Player whitePlayer = new Player("White Player", "bianco");
+           Player blackPlayer = new Player("Black Player", "nero");
+           game = new Game(whitePlayer, blackPlayer);
+           game.setStateGame(true);
+           game.getTable().setupGioco();
+           game.getTable().printMap(); // Stampa solo durante l'inizializzazione del gioco
+       } else {
+           System.out.println("Una partita è già in corso. Terminare la partita corrente \n" + "prima di iniziarne una nuova.");
+           return;
+       }
+   }
+   while (game.getStateGame()) {
+       try {
+           System.out.print("\n\n | GAME | : ");
+           String inputPlay = input.next().toLowerCase().trim();
+           CommandType commPlay = checkCommand(POST_COMMAND, inputPlay);
+           if (commPlay != null) {
+               HandleModule handler = POST_COMMAND.get(commPlay);
+               if (handler != null) {
+                   handler.handle(input, new Scanner(inputPlay), commPlay);
+                   if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP) && !commPlay.equals(CommandType.TABLE)) {
+                       // Nessuna stampa qui, gestita altrove
+                   }
+               }
+           } else {
+               System.out.println("Comando non valido, riprova");
+           }
+       } catch (Exception e) {
+           System.out.println("Errore di I/O: " + e.getMessage());
+       }
+   }
+   if (!game.getStateGame()) {
+       System.out.println("Tornando al menu principale...");
+   }
+}
     /**
      * Handle the exit command.
      *
@@ -244,21 +241,28 @@ public final class App {
      * @param command the command type.
      */
     public static void handleGiveUp(final Scanner input, final Scanner value, final CommandType command)
-     throws IOException {
-        System.out.println("Sicuro di voler abbandonare la partita? (si/no) > ");
-        String choice = input.next().trim();
-        if (choice.equalsIgnoreCase("si")) {
-            System.out.println("\nOk! Hai deciso di abbandonare la partita.");
-            game.setStateGame(false); // Imposta lo stato del gioco a falso per terminare la partita
-            System.out.println("\nVince il bianco per abbandono!");
-            System.out.println("Pedine rimanenti: 2");
-            return; // Uscita immediata dal metodo per evitare ulteriori stampa della mappa
-        } else if (choice.equalsIgnoreCase("no")) {
-            System.out.println("\nLa partita continua. Puoi effettuare nuovi tentativi.");
-        } else {
-            System.out.println("\nScelta non valida, riprova..");
-        }
-    }
+    throws IOException {
+    System.out.println("Sicuro di voler abbandonare la partita? (si/no) > ");
+    String choice = input.next().trim();
+    if (choice.equalsIgnoreCase("si")) {
+       System.out.println("\nOk! Hai deciso di abbandonare la partita.");
+       // Calcola il vincitore basandoti sulle pedine rimaste
+       if (game != null) {
+           game.calculateWinnerDueToForfeit(); // Metodo per calcolare il vincitore
+           game.displayResults();  // Mostra i risultati
+           game.setStateGame(false); // Imposta lo stato del gioco a falso per terminare la partita
+           TAVOLIERE.resetMap(); // Resetta il tavoliere
+       } else {
+           System.out.println("Nessuna partita attiva al momento.");
+       }
+
+       return; // Uscita immediata dal metodo per evitare ulteriori stampa della mappa
+   } else if (choice.equalsIgnoreCase("no")) {
+       System.out.println("\nLa partita continua. Puoi effettuare nuovi tentativi.");
+   } else {
+       System.out.println("\nScelta non valida, riprova..");
+   }
+}
 
     /**
      * Handle the show moves command.
@@ -288,4 +292,21 @@ public final class App {
      throws IOException {
         game.getTable().printMap();
     }
+
+
+    public static void handleCapture(final Scanner input, final Scanner value, final CommandType command) throws IOException {
+    String moveInput = value.nextLine().trim();
+    Player currentPlayer = game.getCurrentPlayer(); // Ottieni il giocatore corrente dal gioco
+    try {
+        Move move = MoveParser.parseMove(moveInput, currentPlayer);
+        if (game.getMoveManager().makeMove(move)) {
+            System.out.println("\nMossa valida!");
+            game.getTable().printMap();
+        } else {
+            System.out.println("\nMossa non valida, riprova.");
+        }
+    } catch (IllegalArgumentException e) {
+        System.out.println(e.getMessage());
+    }
+   }
 }
