@@ -1,11 +1,11 @@
 package it.uniba.app;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-import java.nio.charset.StandardCharsets;
 
 import it.uniba.app.elements.Game;
 import it.uniba.app.elements.Move;
@@ -16,6 +16,8 @@ import it.uniba.app.features.ColorShell;
 import it.uniba.app.features.CommandType;
 import it.uniba.app.features.ViewResult;
 import it.uniba.app.interfaces.HandleModule;
+
+
 
 /**
  * <Boundary> Class
@@ -139,6 +141,7 @@ public final class App {
         System.out.println("/tavoliere/table - Mostra il tavoliere di gioco");
         System.out.println("/abbandona/giveup - Abbandona la partita in corso");
         System.out.println("/qualimosse/moves - Mostra le mosse disponibili");
+        System.out.println("comandi validi per eseguire mosse: [a-g][1-7]-[a-g][1-7]");
     }
 
     /**
@@ -187,6 +190,9 @@ public final class App {
        System.out.println("Tornando al menu principale...");
    }
 }
+
+
+
     /**
      * Handle the exit command.
      *
@@ -241,28 +247,29 @@ public final class App {
      * @param command the command type.
      */
     public static void handleGiveUp(final Scanner input, final Scanner value, final CommandType command)
-    throws IOException {
+     throws IOException {
     System.out.println("Sicuro di voler abbandonare la partita? (si/no) > ");
     String choice = input.next().trim();
     if (choice.equalsIgnoreCase("si")) {
-       System.out.println("\nOk! Hai deciso di abbandonare la partita.");
-       // Calcola il vincitore basandoti sulle pedine rimaste
-       if (game != null) {
-           game.calculateWinnerDueToForfeit(); // Metodo per calcolare il vincitore
-           game.displayResults();  // Mostra i risultati
-           game.setStateGame(false); // Imposta lo stato del gioco a falso per terminare la partita
-           TAVOLIERE.resetMap(); // Resetta il tavoliere
-       } else {
-           System.out.println("Nessuna partita attiva al momento.");
-       }
+        System.out.println("\nOk! Hai deciso di abbandonare la partita.");
+        // Calcola il vincitore basandoti sulle pedine rimaste
+        if (game != null) {
+            game.calculateWinnerDueToForfeit(); // Metodo per calcolare il vincitore
+            game.displayResults();  // Mostra i risultati
+            game.setStateGame(false); // Imposta lo stato del gioco a falso per terminare la partita
+            TAVOLIERE.resetMap(); // Resetta il tavoliere
+        } else {
+            System.out.println("Nessuna partita attiva al momento.");
+        }
 
-       return; // Uscita immediata dal metodo per evitare ulteriori stampa della mappa
-   } else if (choice.equalsIgnoreCase("no")) {
-       System.out.println("\nLa partita continua. Puoi effettuare nuovi tentativi.");
-   } else {
-       System.out.println("\nScelta non valida, riprova..");
-   }
+        return; // Uscita immediata dal metodo per evitare ulteriori stampa della mappa
+    } else if (choice.equalsIgnoreCase("no")) {
+        System.out.println("\nLa partita continua. Puoi effettuare nuovi tentativi.");
+    } else {
+        System.out.println("\nScelta non valida, riprova..");
+    }
 }
+
 
     /**
      * Handle the show moves command.
@@ -308,5 +315,5 @@ public final class App {
     } catch (IllegalArgumentException e) {
         System.out.println(e.getMessage());
     }
-   }
+}
 }

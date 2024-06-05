@@ -1,122 +1,116 @@
 package it.uniba.app.elements;
 
 /**
- * Classe responsabile della gestione delle mosse nel gioco Ataxx.
+ * The MoveManager class manages moves in the Ataxx game.
  */
 public class MoveManager {
     private Table table;
     private TurnManager turnManager;
-    private Game game; // Oggetto Game
+    private Game game; // Game object
 
     /**
-     * Costruttore della classe MoveManager.
+     * Constructs a MoveManager with the specified Table, TurnManager, and Game.
      *
-     * @param table       la tabella di gioco
-     * @param turnManager il gestore dei turni
-     * @param game        l'oggetto Game
+     * @param table       The table of the game.
+     * @param turnManager The turn manager of the game.
+     * @param game        The game object.
      */
     public MoveManager(Table table, TurnManager turnManager, Game game) {
         this.table = table;
         this.turnManager = turnManager;
-        this.game = game; // Inizializza il membro `game` con l'oggetto passato
+        this.game = game; // Initialize the game member with the passed object
     }
 
     /**
-     * Esegue una mossa se valida.
+     * Makes a move in the game.
      *
-     * @param move la mossa da eseguire
-     * @return true se la mossa è valida e viene eseguita, false altrimenti
+     * @param move The move to be made.
+     * @return True if the move is valid and executed successfully, false otherwise.
      */
     public boolean makeMove(Move move) {
         if (validateMove(move)) {
             executeMove(move);
-    
-            // Costruisci una descrizione della mossa e aggiungila alle mosse globali del gioco
-            String moveDescription = move.getStart().toString() + "-" + move.getEnd().toString();
-            game.addMove(moveDescription);  // Assume che 'game' abbia un metodo addMove per registrare le mosse
-    
-            convertAdjacentEnemies(move.getEnd());
-            turnManager.nextTurn();  // Cambia il turno dopo una mossa valida
-            System.out.println("Mossa valida eseguita da " + turnManager.getCurrentPlayer().getName());
+            turnManager.nextTurn();  // Change turn after a valid move
+            System.out.println("Valid move made by " + turnManager.getCurrentPlayer().getName());
             return true;
         }
-        System.out.println("Mossa non valida: " + move);
+        System.out.println("Invalid move: " + move);
         return false;
     }
-    
+
     /**
-     * Valida una mossa.
+     * Validates a move.
      *
-     * @param move la mossa da validare
-     * @return true se la mossa è valida, false altrimenti
+     * @param move The move to be validated.
+     * @return True if the move is valid, false otherwise.
      */
     private boolean validateMove(Move move) {
         int startX = move.getStart().getX();
         int startY = move.getStart().getY();
         int endX = move.getEnd().getX();
         int endY = move.getEnd().getY();
-    
+
         Pawn originPawn = table.getPawnAt(startX, startY);
         Pawn targetPawn = table.getPawnAt(endX, endY);
-    
-        System.out.println("Coordinate di partenza: (" + startX + ", " + startY + ")");
-        System.out.println("Coordinate di arrivo: (" + endX + ", " + endY + ")");
-        System.out.println("Pedina di origine: " + (originPawn != null ? originPawn.toString() : "nulla"));
-        System.out.println("Pedina di destinazione: " + (targetPawn != null ? targetPawn.toString() : "nulla"));
-    
-        // Assicurati che la pedina di origine esista e sia valida
+
+        System.out.println("Start coordinates: (" + startX + ", " + startY + ")");
+        System.out.println("End coordinates: (" + endX + ", " + endY + ")");
+        System.out.println("Origin pawn: " + (originPawn != null ? originPawn.toString() : "none"));
+        System.out.println("Target pawn: " + (targetPawn != null ? targetPawn.toString() : "none"));
+
+        // Ensure the origin pawn exists and is valid
         if (originPawn == null || originPawn.getUnicodeCharacter() == ' ' || originPawn.getOwner() == null || originPawn.getOwner().isEmpty()) {
-            System.out.println("La posizione di partenza non contiene una tua pedina valida.");
+            System.out.println("The start position does not contain a valid pawn of yours.");
             return false;
         }
-    
-        // Verifica che la pedina di origine appartenga al giocatore corrente
+
+        // Check if the origin pawn belongs to the current player
         if (!originPawn.getOwner().equals(turnManager.getCurrentPlayer().getColor())) {
-            System.out.println("La pedina di partenza non appartiene al giocatore corrente.");
+            System.out.println("The start pawn does not belong to the current player.");
             return false;
         }
-    
-        // Verifica che la posizione di destinazione sia vuota
+
+        // Check if the destination position is empty
         if (targetPawn != null && targetPawn.getUnicodeCharacter() != ' ') {
-            System.out.println("La posizione di destinazione non è vuota.");
+            System.out.println("The destination position is not empty.");
             return false;
         }
-    
-        // Controlla se la mossa è adiacente o un salto
+
+        // Check if the move is adjacent or a jump
         int dx = Math.abs(startX - endX);
         int dy = Math.abs(startY - endY);
         if ((dx == 1 && dy <= 1) || (dy == 1 && dx <= 1)) {
-            // Mossa adiacente
+            // Adjacent move
             return true;
         } else if ((dx == 2 && dy <= 2) || (dy == 2 && dx <= 2)) {
-            // Mossa di salto
+            // Jump move
             return true;
         }
-    
-        System.out.println("Mossa non valida, non adiacente né di salto.");
+
+        System.out.println("Invalid move, neither adjacent nor jump.");
         return false;
     }
-    
+
     /**
-     * Esegue una mossa.
+     * Executes a valid move.
      *
-     * @param move la mossa da eseguire
+     * @param move The move to be executed.
      */
     private void executeMove(Move move) {
         int startX = move.getStart().getX();
         int startY = move.getStart().getY();
         int endX = move.getEnd().getX();
         int endY = move.getEnd().getY();
-    
+
         Pawn movingPawn = table.getPawnAt(startX, startY);
-    
-        // Verifica se la mossa è un salto
+
+        // Check if the move is a jump
         if (Math.abs(startX - endX) > 1 || Math.abs(startY - endY) > 1) {
-            // Mossa di salto: sposta la pedina e pulisci la posizione originale
+            // Jump move: move the pawn and clear the original position
             table.setPawnAt(endX, endY, new Pawn(movingPawn.getOwner(), movingPawn.getUnicodeCharacter(), movingPawn.getColor(), endX, endY));
-            table.clearPawnAt(startX, startY);  // Rimuove la pedina dalla posizione di partenza
+            table.clearPawnAt(startX, startY);  // Remove the pawn from the start position
         } else {
-            // Mossa normale: duplica la pedina nella posizione di destinazione
+            // Normal move: duplicate the pawn at the destination position
             table.setPawnAt(endX, endY, new Pawn(movingPawn.getOwner(), movingPawn.getUnicodeCharacter(), movingPawn.getColor(), endX, endY));
         }
     }
