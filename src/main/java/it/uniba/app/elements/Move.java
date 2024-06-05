@@ -1,12 +1,7 @@
 package it.uniba.app.elements;
 
 /**
- * Class that represents a move in the game Ataxx.
- * <b>Class Type:</b> <Entity>
- * <b>Responsibilities:</b>
- * - Store the start and end coordinates of a move.
- * - Store the player making the move.
- * - Determine if the move is a jump.
+ * The Move class represents a move made by a player in the Ataxx game.
  */
 public class Move {
     private Coordinate start;
@@ -14,10 +9,11 @@ public class Move {
     private Player player;
 
     /**
-     * Constructor for the Move class.
-     * @param start The starting coordinate of the move.
-     * @param end The ending coordinate of the move.
-     * @param player The player making the move.
+     * Constructs a Move with the specified start and end coordinates and the player who made the move.
+     *
+     * @param start  The starting coordinate of the move.
+     * @param end    The ending coordinate of the move.
+     * @param player The player who made the move.
      */
     public Move(Coordinate start, Coordinate end, Player player) {
         this.start = start;
@@ -27,7 +23,8 @@ public class Move {
 
     /**
      * Gets the starting coordinate of the move.
-     * @return The starting coordinate.
+     *
+     * @return The starting coordinate of the move.
      */
     public Coordinate getStart() {
         return start;
@@ -35,17 +32,29 @@ public class Move {
 
     /**
      * Gets the ending coordinate of the move.
-     * @return The ending coordinate.
+     *
+     * @return The ending coordinate of the move.
      */
     public Coordinate getEnd() {
         return end;
     }
 
     /**
-     * Gets the player making the move.
-     * @return The player making the move.
+     * Gets the player who made the move.
+     *
+     * @return The player who made the move.
      */
     public Player getPlayer() {
         return player;
+    }
+
+    /**
+     * Checks if the move is a jump.
+     * Assumes that jumps are moves that cross two squares.
+     *
+     * @return True if the move is a jump, false otherwise.
+     */
+    public boolean isJump() {
+        return (Math.abs(start.getX() - end.getX()) == 2 || Math.abs(start.getY() - end.getY()) == 2);
     }
 }

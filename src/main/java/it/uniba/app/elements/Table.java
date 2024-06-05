@@ -75,13 +75,12 @@ public final class Table {
      * Sets up the game by configuring the pawns with the appropriate coordinates.
      */
     public void setupGioco() {
-        // Configure pawns with appropriate coordinates
-        map[0][0] = new Pawn("Player1", '\u26C0', "\u001B[40m", 0, 0); // Bianco
-        map[0][size - 1] = new Pawn("Player2", '\u26C2', "\u001B[40m", 0, size - 1); // Nero
-        map[size - 1][0] = new Pawn("Player2", '\u26C2', "\u001B[40m", size - 1, 0); // Nero
-        map[size - 1][size - 1] = new Pawn("Player1", '\u26C0', "\u001B[40m", size - 1, size - 1); // Bianco
+        map[0][0] = new Pawn("nero", '\u26C0', "\u001B[40m", 0, 0); // Bianco
+        map[0][size - 1] = new Pawn("bianco", '\u26C2', "\u001B[40m", 0, size - 1); // Nero
+        map[size - 1][0] = new Pawn("bianco", '\u26C2', "\u001B[40m", size - 1, 0); // Nero
+        map[size - 1][size - 1] = new Pawn("nero", '\u26C0', "\u001B[40m", size - 1, size - 1); // Bianco
     }
-
+    
     /**
      * Sets up the color map for specific player positions.
      * This method assigns specific ANSI color codes to certain positions on the game board,
@@ -116,12 +115,12 @@ public final class Table {
             System.out.print(" " + (i + 1) + "|");
             for (int j = 0; j < size; j++) {
                 Pawn pawn = map[i][j];
-                if (pawn != null && pawn.getOwner() != null) {
-                    // Print the pawn with the specified color
-                    System.out.print(pawn.getColor() + " " + pawn.getUnicodeCharacter() + " \u001B[0m|");
+                if (pawn != null && pawn.getOwner() != null && !pawn.getOwner().isEmpty()) {
+                    // Assicurati di stampare solo il carattere Unicode della pedina
+                    String display = String.format(" %c ", pawn.getUnicodeCharacter()); // Formatta con spazi per allineamento
+                    System.out.print(display + "|");
                 } else {
-                    // Empty cells
-                    System.out.print("   |");
+                    System.out.print("   |"); // Celle vuote
                 }
             }
             System.out.println(" " + (i + 1));
@@ -129,6 +128,7 @@ public final class Table {
         }
         System.out.println("   a   b   c   d   e   f   g");
     }
+    
 
     /**
      * Prints the game map to the console with colors.
@@ -155,74 +155,70 @@ public final class Table {
         System.out.println("   a   b   c   d   e   f   g");
     }
 
+
     /**
-    * Retrieves the pawn at the specified position.
-    *
-    * @param x The x coordinate (row) of the pawn.
-    * @param y The y coordinate (column) of the pawn.
-    * @return The pawn at the specified position, or null if there is no pawn.
-    */
+     * Ottiene la pedina nella posizione specificata.
+     *
+     * @param x la coordinata x (riga) della pedina.
+     * @param y la coordinata y (colonna) della pedina.
+     * @return la pedina nella posizione specificata, o null se non c'è nessuna pedina.
+     */
     public Pawn getPawnAt(int x, int y) {
-    if (x >= 0 && x < size && y >= 0 && y < size) {
-        return map[x][y];
-    }
-    return null; // Returns null if the coordinates are out of bounds.
+        if (x >= 0 && x < size && y >= 0 && y < size) {
+            return map[x][y];
+        }
+        return null; // Restituisce null se le coordinate sono fuori dai limiti.
     }
 
     /**
-    * Sets a pawn at a specified position on the board.
-    *
-    * @param x    The x coordinate (row) where to place the pawn.
-    * @param y    The y coordinate (column) where to place the pawn.
-    * @param pawn The pawn to be placed.
-    */
+     * Imposta una pedina in una posizione specificata del tavoliere.
+     *
+     * @param x la coordinata x (riga) dove posizionare la pedina.
+     * @param y la coordinata y (colonna) dove posizionare la pedina.
+     * @param pawn la pedina da posizionare.
+     */
     public void setPawnAt(int x, int y, Pawn pawn) {
-    if (x >= 0 && x < size && y >= 0 && y < size) {
-        map[x][y] = pawn; // Ensure this actually updates the array
-        System.out.println("Updated pawn at (" + x + ", " + y + ") to " + pawn.getOwner() + " with character " + pawn.getUnicodeCharacter());
-    } else {
-        System.out.println("Attempted to set pawn out of bounds at (" + x + ", " + y + ")");
+        if (x >= 0 && x < size && y >= 0 && y < size) {
+            map[x][y] = pawn; // Assicurati che questo aggiorni effettivamente l'array
+            System.out.println("Updated pawn at (" + x + ", " + y + ") to " + pawn.getOwner() + " with character " + pawn.getUnicodeCharacter());
+        } else {
+            System.out.println("Attempted to set pawn out of bounds at (" + x + ", " + y + ")");
+        }
     }
- }
-
-    /**
-    * Clears a pawn at a specified position on the board.
-    *
-    * @param x The x coordinate (row) of the pawn to clear.
-    * @param y The y coordinate (column) of the pawn to clear.
-    */
+    
+    
+    
     public void clearPawnAt(int x, int y) {
-    if (x >= 0 && x < size && y >= 0 && y < size) {
-        map[x][y] = new Pawn("", ' ', "", x, y); // Sets an empty pawn
+        if (x >= 0 && x < size && y >= 0 && y < size) {
+            map[x][y] = new Pawn("", ' ', "", x, y); // Imposta una pedina vuota
+        }
     }
-  }
+    
+    
 
     /**
-    * Returns the size of the table.
-    *
-    * @return The size of the table.
-    */
+ * Returns the size of the table.
+ *
+ * @return the size of the table.
+ */
     public int getSize() {
     return size;
     }
 
-    /**
-    * Counts the pawns owned by the specified player.
-    *
-    * @param owner The owner of the pawns to count.
-    * @return The number of pawns owned by the specified player.
-    */
     public int countPawns(String owner) {
-    int count = 0;
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            Pawn pawn = getPawnAt(i, j);
-            if (pawn != null && pawn.getOwner().equals(owner)) {
-                count++;
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                Pawn pawn = getPawnAt(i, j);
+                if (pawn != null && pawn.getOwner().equals(owner)) {
+                    count++;
+                }
             }
         }
+        System.out.println("Total pawns for owner " + owner + ": " + count);
+        return count;
     }
-    System.out.println("Total pawns for owner " + owner + ": " + count);
-    return count;
-    }
+    
+    
+    
 }
