@@ -28,12 +28,14 @@ public class MoveManager {
      */
     public boolean makeMove(Move move) {
         if (validateMove(move)) {
-            executeMove(move);
+            executeMove(move);   
             String moveDescription = move.getStart().toString() + "-" + move.getEnd().toString();
-            game.addMove(moveDescription);  // Assume che 'game' abbia un metodo addMove per registrare le mosse
+            game.addMove(moveDescription);  // Assume che 'game' abbia un metodo addMove per registrare le mosse    
             convertAdjacentEnemies(move.getEnd());
-            turnManager.nextTurn();  // Change turn after a valid move
-            System.out.println("Mosse valida di : " + turnManager.getCurrentPlayer().getName());
+            game.checkForVictory();
+            turnManager.nextTurn();  // Cambia il turno dopo una mossa valida
+            System.out.println("Mossa valida eseguita da " + turnManager.getCurrentPlayer().getName());
+            game.checkForEndOfGame();  // Assicurati che game sia accessibile all'interno di MoveManager, se non lo è, considera passarlo come parametro o renderlo globalmente accessibile in qualche modo.
             return true;
         }
         System.out.println("Mossa non valida: " + move);
