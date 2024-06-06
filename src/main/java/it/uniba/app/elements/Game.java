@@ -1,5 +1,6 @@
 package it.uniba.app.elements;
-
+import java.util.ArrayList;
+import java.util.List;
 /**
  * The Game class represents a game instance.
  */
@@ -10,6 +11,8 @@ public class Game {
     private final Table table;
     private final TurnManager turnManager; // Add TurnManager as a member of the class
     private Player winner; // Instance variable to store the winner
+    private List<String> whiteMoves;
+    private List<String> blackMoves;
 
     /**
      * Constructs a new Game instance.
@@ -22,6 +25,8 @@ public class Game {
         this.stateGame = false;
         this.table = Table.getInstance(MAX_SIZE); // Use singleton to get the Table instance
         this.turnManager = new TurnManager(whitePlayer, blackPlayer); // Initialize TurnManager
+        this.whiteMoves=new ArrayList<>();
+        this.blackMoves=new ArrayList<>();
     }
 
     /**
@@ -94,5 +99,28 @@ public class Game {
         System.out.println("The winner is: " + winner.getName());
         System.out.println("Remaining pawns - " + winner.getName() + ": " + table.countPawns(winner.getColor()));
         System.out.println("Remaining pawns - " + turnManager.getOpponent().getName() + ": " + table.countPawns(turnManager.getOpponent().getColor()));
+    }
+
+    /** 
+     * @param move
+     */
+    // Metodo per aggiungere mosse alla lista
+    public void addMove(String move) {
+        if (turnManager.getCurrentPlayer().getColor().equals("bianco")) {
+            whiteMoves.add(move);
+        } else {
+            blackMoves.add(move);
+        }
+    }
+
+    public void printMoves() {
+        System.out.println("Mosse giocatore bianco:");
+        for (String move : whiteMoves) {
+            System.out.print(move + "; ");
+        }
+        System.out.println("\nMosse giocatore nero:");
+        for (String move : blackMoves) {
+            System.out.print(move + "; ");
+        }
     }
 }

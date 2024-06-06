@@ -29,6 +29,8 @@ public class MoveManager {
     public boolean makeMove(Move move) {
         if (validateMove(move)) {
             executeMove(move);
+            String moveDescription = move.getStart().toString() + "-" + move.getEnd().toString();
+            game.addMove(moveDescription);  // Assume che 'game' abbia un metodo addMove per registrare le mosse
             convertAdjacentEnemies(move.getEnd());
             turnManager.nextTurn();  // Change turn after a valid move
             System.out.println("Mosse valida di : " + turnManager.getCurrentPlayer().getName());

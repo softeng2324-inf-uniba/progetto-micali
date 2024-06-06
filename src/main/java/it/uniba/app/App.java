@@ -91,6 +91,7 @@ public final class App {
         POST_COMMAND.put(CommandType.HELP, App::handleHelp);
         POST_COMMAND.put(CommandType.TABLE, App::handleTable);
         POST_COMMAND.put(CommandType.CAPTURE, App::handleCapture);
+        POST_COMMAND.put(CommandType.OLD_MOVES, App::handleOldMoves);
     }
 
     /**
@@ -315,5 +316,9 @@ public final class App {
     } catch (IllegalArgumentException e) {
         System.out.println(e.getMessage());
     }
+}
+
+public static void handleOldMoves(final Scanner input, final Scanner value, final CommandType command) {
+    game.printMoves();
 }
 }
