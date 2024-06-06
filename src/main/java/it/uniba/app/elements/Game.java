@@ -123,4 +123,60 @@ public class Game {
             System.out.print(move + "; ");
         }
     }
+
+ /**
+     * Checks if the board is full.
+     *
+     * @return boolean - true if the board is full, false otherwise
+     */
+    public boolean isBoardFull() {
+        for (int i = 0; i < table.getSize(); i++) {
+            for (int j = 0; j < table.getSize(); j++) {
+                if (table.getPawnAt(i, j) == null || table.getPawnAt(i, j).getOwner().isEmpty()) {
+                    return false; // Se trova almeno una cella vuota, il tavoliere non è pieno
+                }
+            }
+        }
+        return true; // Nessuna cella vuota trovata, il tavoliere è pieno
+    }
+
+    /**
+     * Checks for the end of the game and calls endGame() if the board is full.
+     */
+    public void checkForEndOfGame() {
+        if (isBoardFull()) {
+            endGame();
+        }
+    }
+
+    /**
+     * Ends the game, determines the winner based on the number of pawns,
+     * and prints the results.
+     */
+    public void endGame() {
+        int whitePawns = table.countPawns("bianco");
+        int blackPawns = table.countPawns("nero");
+        Player winner = whitePawns > blackPawns ? turnManager.getWhitePlayer() : turnManager.getBlackPlayer();
+        System.out.println("Fine del gioco! Il vincitore è " + winner.getName() + " con " + Math.max(whitePawns, blackPawns) + " pedine.");
+        System.out.println("Bianco: " + whitePawns + " pedine. Nero: " + blackPawns + " pedine.");
+        setStateGame(false); // Imposta lo stato del gioco a falso, terminando la partita
+        table.resetMap();
+    }
+
+    
+    /**
+     * Checks if the current player has won the game.
+     * A player wins if the opponent has no pawns left on the board.
+     * If a victory condition is met, the game ends and results are displayed.
+     */
+    public void checkForVictory() {
+        int opponentPawns = table.countPawns(turnManager.getOpponent().getColor());
+        if (opponentPawns == 0) {
+        winner = turnManager.getCurrentPlayer();
+        displayResults(); // Mostra i risultati della vittoria
+        setStateGame(false); // Termina il gioco
+        table.resetMap(); // Resetta il tavoliere
+        System.out.println("Il gioco è finito. Vincitore: " + winner.getName());
+        }
+    }
 }
