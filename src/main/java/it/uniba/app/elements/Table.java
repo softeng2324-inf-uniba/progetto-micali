@@ -12,17 +12,21 @@ public final class Table {
     private final Pawn[][] map;
     private final int size;
     private final String[][] colorMap;
-
+    private boolean[][] blockedCells;
+    private int blockedCount = 0; // Contatore delle caselle attualmente bloccate
+    private boolean isBlocked = false; // Aggiunto per controllare se il blocco è stato eseguito
     private static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
     private static final String ANSI_CUSTOM_ORANGE_BACKGROUND = "\u001B[48;5;202m";
+    private static final String ANSI_GREY_BACKGROUND = "\u001B[100m";
     private static final String ANSI_RESET = "\u001B[0m"; // Per resettare il colore alla fine di ogni cella
-
     private static final int PLAYER_POSITION_1 = 0;
     private static final int PLAYER_POSITION_2 = 1;
     private static final int PLAYER_POSITION_3 = 2;
     private static final int PLAYER_POSITION_4 = 4;
     private static final int PLAYER_POSITION_5 = 5;
     private static final int PLAYER_POSITION_6 = 6;
+    public static final int MAX_BLOCKS = 9; // Limite massimo di caselle bloccabili
+
 
     /**
      * Constructs a new Table object with the specified size.
@@ -33,6 +37,7 @@ public final class Table {
         this.size = tableSize;
         this.map = new Pawn[tableSize][tableSize];
         this.colorMap = new String[tableSize][tableSize];
+        this.blockedCells = new boolean[size][size];
         initializeMap();
     }
 
@@ -43,7 +48,6 @@ public final class Table {
      * @return The singleton instance of the Table class.
      */
     @SuppressFBWarnings(value = "MS_EXPOSE_REP", justification = "Rationale for why this is safe")
-
     public static synchronized Table getInstance(final int tableSize) {
         if (instance == null) {
             instance = new Table(tableSize);
@@ -67,9 +71,13 @@ public final class Table {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 map[i][j] = new Pawn("", ' ', "", i, j);  // Initialize with default values
+                blockedCells[i][j] = false;  // Resetta lo stato bloccato delle celle
             }
         }
+        blockedCount = 0;
+        isBlocked = false;  // Resetta lo stato bloccato
     }
+    
 
     /**
      * Sets up the game by configuring the pawns with the appropriate coordinates.
@@ -80,7 +88,7 @@ public final class Table {
         map[size - 1][0] = new Pawn("bianco", '\u26C2', "\u001B[40m", size - 1, 0); // Nero
         map[size - 1][size - 1] = new Pawn("nero", '\u26C0', "\u001B[40m", size - 1, size - 1); // Bianco
     }
-    
+
     /**
      * Sets up the color map for specific player positions.
      * This method assigns specific ANSI color codes to certain positions on the game board,
@@ -129,7 +137,6 @@ public final class Table {
         System.out.println("   a   b   c   d   e   f   g");
     }
     
-
     /**
      * Prints the game map to the console with colors.
      */
@@ -155,7 +162,41 @@ public final class Table {
         System.out.println("   a   b   c   d   e   f   g");
     }
 
-
+    /**
+     * Prints the map with the current state of the game.
+     * Each cell is represented by a character and may have a background color.
+     * Blocked cells are displayed with a grey background.
+     */
+    /**
+     * Prints the map with the current state of the game.
+     * Each cell is represented by a character and may have a background color.
+     * Blocked cells are displayed with a grey background.
+     */
+    public void printMap3() {
+        System.out.println("   a   b   c   d   e   f   g");
+        System.out.println("  +---+---+---+---+---+---+---+");
+        for (int i = 0; i < size; i++) {
+            System.out.print((i + 1) + " |");
+            for (int j = 0; j < size; j++) {
+                String cellBackground = ANSI_RESET;
+                String content = "   ";  // Default empty content
+    
+                if (blockedCells[i][j]) {
+                    cellBackground = ANSI_GREY_BACKGROUND;  // Grey background for blocked cells
+                    content = " X ";  // Content for blocked cells
+                } else if (map[i][j] != null && !map[i][j].getOwner().isEmpty()) {
+                    content = " " + map[i][j].getUnicodeCharacter() + " ";  // Content for occupied cells
+                }
+    
+                System.out.print(String.format("%s%-3s%s|", cellBackground, content, ANSI_RESET));  // Left align with a total width of 3 characters
+            }
+            System.out.println(" " + (i + 1));
+            System.out.println("  +---+---+---+---+---+---+---+");
+        }
+        System.out.println("   a   b   c   d   e   f   g");
+    }
+    
+    
     /**
      * Ottiene la pedina nella posizione specificata.
      *
@@ -180,31 +221,27 @@ public final class Table {
     public void setPawnAt(int x, int y, Pawn pawn) {
         if (x >= 0 && x < size && y >= 0 && y < size) {
             map[x][y] = pawn; // Assicurati che questo aggiorni effettivamente l'array
-            System.out.println("Updated pawn at (" + x + ", " + y + ") to " + pawn.getOwner() + " with character " + pawn.getUnicodeCharacter());
-        } else {
-            System.out.println("Attempted to set pawn out of bounds at (" + x + ", " + y + ")");
         }
     }
     
-    
-    
+    /**
+     * Rimuove una pedina da una posizione specificata del tavoliere.
+     *
+     * @param x la coordinata x (riga) da cui rimuovere la pedina.
+     * @param y la coordinata y (colonna) da cui rimuovere la pedina.
+     */
     public void clearPawnAt(int x, int y) {
         if (x >= 0 && x < size && y >= 0 && y < size) {
             map[x][y] = new Pawn("", ' ', "", x, y); // Imposta una pedina vuota
         }
     }
-    
-    
 
     /**
- * Returns the size of the table.
- *
- * @return the size of the table.
- */
-    public int getSize() {
-    return size;
-    }
-
+     * Counts the number of pawns owned by a specific player.
+     *
+     * @param owner the owner of the pawns to count.
+     * @return the number of pawns owned by the specified player.
+     */
     public int countPawns(String owner) {
         int count = 0;
         for (int i = 0; i < size; i++) {
@@ -215,10 +252,205 @@ public final class Table {
                 }
             }
         }
-        System.out.println("Total pawns for owner " + owner + ": " + count);
         return count;
+    }    
+
+        /**
+     * Blocks a cell at the specified coordinates.
+     *
+     * @param x the x-coordinate (row) of the cell to block.
+     * @param y the y-coordinate (column) of the cell to block.
+     * @return true if the cell was successfully blocked, false otherwise.
+     */
+    public boolean blockCell(int x, int y) {
+        if (canBlockCell(x, y)) {
+            blockedCells[x][y] = true;
+            blockedCount++;
+            isBlocked = true;  // Imposta lo stato bloccato su vero
+            return true;
+        }
+        return false;
+    }
+
+        /**
+     * Checks if a position is a start position.
+     *
+     * @param x the x-coordinate (row) to check.
+     * @param y the y-coordinate (column) to check.
+     * @return true if the position is a start position, false otherwise.
+     */
+    private boolean isStartPosition(int x, int y) {
+        return (x == 0 && (y == 0 || y == size - 1)) || (x == size - 1 && (y == 0 || y == size - 1));
+    }
+
+
+
+    
+     /**
+     * Checks if a cell can be blocked.
+     *
+     * @param x the x-coordinate (row) of the cell.
+     * @param y the y-coordinate (column) of the cell.
+     * @return true if the cell can be blocked, false otherwise.
+     */
+    private boolean canBlockCell(int x, int y) {
+        if (!isValidPosition(x, y) || blockedCells[x][y] || blockedCount >= MAX_BLOCKS || isStartPosition(x, y) || isInitialPawnPosition(x, y)) {
+            return false;
+        }
+
+        // Salva lo stato attuale delle celle bloccate
+        boolean[][] tempBlockedCells = new boolean[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                tempBlockedCells[i][j] = blockedCells[i][j];
+            }
+        }
+
+        // Prova a bloccare la cella
+        tempBlockedCells[x][y] = true;
+
+        // Verifica se ci sono almeno due vie libere per la duplicazione o il salto delle pedine di partenza
+        return hasTwoFreePaths(tempBlockedCells);
+    }
+
+/**
+ * Checks if a position is an initial pawn position.
+ *
+ * @param x the x-coordinate (row) to check.
+ * @param y the y-coordinate (column) to check.
+ * @return true if the position is an initial pawn position, false otherwise.
+ */
+private boolean isInitialPawnPosition(int x, int y) {
+    return (x == 0 && y == 0) || (x == 0 && y == size - 1) || (x == size - 1 && y == 0) || (x == size - 1 && y == size - 1);
+}
+
+/**
+ * Checks if there are at least two free paths for the starting positions.
+ *
+ * @param tempBlockedCells the temporary blocked cells map.
+ * @return true if there are at least two free paths, false otherwise.
+ */
+private boolean hasTwoFreePaths(boolean[][] tempBlockedCells) {
+    int[][] directions = {
+        {1, 0}, {-1, 0}, {0, 1}, {0, -1}, 
+        {1, 1}, {-1, -1}, {1, -1}, {-1, 1}, 
+        {2, 0}, {-2, 0}, {0, 2}, {0, -2}, 
+        {2, 2}, {-2, -2}, {2, -2}, {-2, 2}
+    };
+    int[][] startPositions = {
+        {0, 0}, {0, size - 1}, {size - 1, 0}, {size - 1, size - 1}
+    };
+
+    for (int[] startPos : startPositions) {
+        int freePaths = 0;
+        for (int[] dir : directions) {
+            int newX = startPos[0] + dir[0];
+            int newY = startPos[1] + dir[1];
+            if (isValidPosition(newX, newY) && !tempBlockedCells[newX][newY]) {
+                freePaths++;
+                if (freePaths >= 2) {
+                    break;
+                }
+            }
+        }
+        if (freePaths < 2) {
+            return false; // Se una posizione di partenza non ha almeno due vie libere, ritorna false
+        }
+    }
+    return true; // Se tutte le posizioni di partenza hanno almeno due vie libere, ritorna true
+}
+
+
+
+    /**
+     * Checks if a position is valid within the table.
+     *
+     * @param x the x-coordinate (row) to check.
+     * @param y the y-coordinate (column) to check.
+     * @return true if the position is valid, false otherwise.
+     */
+    private boolean isValidPosition(int x, int y) {
+        // Verifica che la posizione non sia fuori dai limiti del tavolo
+        return x >= 0 && x < size && y >= 0 && y < size;
     }
     
-    
-    
+
+    /**
+     * Processes a block command from the user input.
+     *
+     * @param cell the cell to block, in the format "a1", "b2", etc.
+     * @return true if the cell was successfully blocked, false otherwise.
+     */
+    public boolean processBlockCommand(String cell) {
+        try {
+            int y = cell.charAt(0) - 'a';
+            int x = Integer.parseInt(cell.substring(1)) - 1;
+            if (blockCell(x, y)) {
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("Errore: Formato di cella non valido - " + cell);
+        }
+        return false;
+    }
+
+    /**
+     * Applies blocked status to cells on the game board.
+     * This method iterates through each cell in the game board and if a cell is marked as blocked,
+     * it places a 'blocked' pawn on that cell, visually representing the block with a specified color.
+     */
+    public void applyBlockedCells() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (blockedCells[i][j]) {
+                    map[i][j] = new Pawn("blocked", 'X', ANSI_GREY_BACKGROUND, i, j);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the count of cells that are currently blocked on the game board.
+     *
+     * @return The number of blocked cells.
+     */
+    public int getBlockedCount() {
+        return blockedCount;
+    }
+
+    /**
+     * Sets the blocked status of an entity (such as a cell or player).
+     *
+     * @param status The new blocked status to set (true for blocked, false for not blocked).
+     */
+    public void setBlocked(boolean status) {
+        isBlocked = status;
+    }
+
+    /**
+     * Checks if the entity is currently blocked.
+     *
+     * @return True if the entity is blocked, false otherwise.
+     */
+    public boolean getIsBlocked() {
+        return isBlocked;
+    }
+
+    /**
+     * Checks if the table has any blocked cells.
+     *
+     * @return true if the table has blocked cells, false otherwise.
+     */
+    public boolean hasBlockedCells() {
+        return isBlocked;
+    }
+
+     /**
+     * Returns the size of the table.
+     *
+     * @return the size of the table.
+     */
+    public int getSize() {
+        return size;
+    }
 }
