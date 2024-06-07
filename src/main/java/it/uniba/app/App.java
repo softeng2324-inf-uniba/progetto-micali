@@ -1,11 +1,12 @@
 package it.uniba.app;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.nio.charset.StandardCharsets;
+
 
 import it.uniba.app.elements.Game;
 import it.uniba.app.elements.Move;
@@ -86,6 +87,7 @@ public final class App {
         PRE_COMMAND.put(CommandType.EXIT,  App::handleExit);
         PRE_COMMAND.put(CommandType.START, App::handlePlay);
         PRE_COMMAND.put(CommandType.EMPTY, App::handleEmpty);
+        PRE_COMMAND.put(CommandType.BLOCKCELL, App::handleBlockCell);
         POST_COMMAND.put(CommandType.GIVE_UP, App::handleGiveUp);
         POST_COMMAND.put(CommandType.SHOW_MOVES, App::handleShowMoves);
         POST_COMMAND.put(CommandType.HELP, App::handleHelp);
@@ -128,22 +130,26 @@ public final class App {
      * @throws IOException if an I/O error occurs.
      */
     public static void handleHelp(final Scanner input, final Scanner value, final CommandType command)
-     throws IOException {
-        System.out.println("\nComandi disponibili: ");
-        System.out.println("/gioca/play - Inizia una nuova partita");
-        System.out.println("/esci/exit -  Termina il gioco");
-        System.out.println("/aiuto/help - Mostra l'elenco dei comandi disponibili");
-        System.out.println("/vuoto/empty - Crea un tavoliere vuoto");
-        System.out.println("/tavoliere/table -  Mostra il tavoliere di gioco");
-        System.out.println("/qualimosse/moves - Mostra le mosse disponibili");
-        System.out.println("/abbandona/giveup -  Abbandona la partita in corso");
-        System.out.println("\nLista di comandi eseguibili dopo l'avvio di una partita: \n");
-        System.out.println("/aiuto/help - Mostra l'elenco dei comandi disponibili");
-        System.out.println("/tavoliere/table - Mostra il tavoliere di gioco");
-        System.out.println("/abbandona/giveup - Abbandona la partita in corso");
-        System.out.println("/qualimosse/moves - Mostra le mosse disponibili");
-        System.out.println("comandi validi per eseguire mosse: [a-g][1-7]-[a-g][1-7]");
-    }
+    throws IOException {
+    String format = "%-20s %s%n";
+    
+    System.out.println("\nComandi disponibili:");
+    System.out.printf(format, "/gioca/play", "Inizia una nuova partita");
+    System.out.printf(format, "/esci/exit", "Termina il gioco");
+    System.out.printf(format, "/aiuto/help", "Mostra l'elenco dei comandi disponibili");
+    System.out.printf(format, "/vuoto/empty", "Crea un tavoliere vuoto");
+    System.out.printf(format, "/tavoliere/table", "Mostra il tavoliere di gioco");
+    System.out.printf(format, "/qualimosse/moves", "Mostra le mosse disponibili");
+    System.out.printf(format, "/bloccaxn/blockxn", "Blocca le celle del tavoliere (MAX 9 celle)");
+
+    System.out.println("\nLista di comandi eseguibili dopo l'avvio di una partita:");
+    System.out.printf(format, "/mosse/oldmoves", "Mostra le mosse effettuate");
+    System.out.printf(format, "/aiuto/help", "Mostra l'elenco dei comandi disponibili");
+    System.out.printf(format, "/tavoliere/table", "Mostra il tavoliere di gioco");
+    System.out.printf(format, "/abbandona/giveup", "Abbandona la partita in corso");
+    System.out.printf(format, "/qualimosse/moves", "Mostra le mosse disponibili");
+}
+
 
     /**
      * Handle the play command.
@@ -152,46 +158,57 @@ public final class App {
      * @param value   the value scanner.
      * @param command the command type.
      */
-    public static synchronized void handlePlay(final Scanner input, final Scanner value, final CommandType command)
-    throws IOException {
-   if (command == CommandType.START) {
-       if (game == null || !game.getStateGame()) {
-           Player whitePlayer = new Player("White Player", "bianco");
-           Player blackPlayer = new Player("Black Player", "nero");
-           game = new Game(whitePlayer, blackPlayer);
-           game.setStateGame(true);
-           game.getTable().setupGioco();
-           game.getTable().printMap(); // Stampa solo durante l'inizializzazione del gioco
-       } else {
-           System.out.println("Una partita è già in corso. Terminare la partita corrente \n" + "prima di iniziarne una nuova.");
-           return;
-       }
-   }
-   while (game.getStateGame()) {
-       try {
-           System.out.print("\n\n | GAME | : ");
-           String inputPlay = input.next().toLowerCase().trim();
-           CommandType commPlay = checkCommand(POST_COMMAND, inputPlay);
-           if (commPlay != null) {
-               HandleModule handler = POST_COMMAND.get(commPlay);
-               if (handler != null) {
-                   handler.handle(input, new Scanner(inputPlay), commPlay);
-                   if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP) && !commPlay.equals(CommandType.TABLE)) {
-                       // Nessuna stampa qui, gestita altrove
-                   }
-               }
-           } else {
-               System.out.println("Comando non valido, riprova");
-           }
-       } catch (Exception e) {
-           System.out.println("Errore di I/O: " + e.getMessage());
-       }
-   }
-   if (!game.getStateGame()) {
-       System.out.println("Tornando al menu principale...");
-   }
-}
-
+   /**
+     * Handle the play command.
+     *
+     * @param input   the input scanner.
+     * @param value   the value scanner.
+     * @param command the command type.
+     */
+    public static synchronized void handlePlay(final Scanner input, final Scanner value, final CommandType command) throws IOException {
+        if (command == CommandType.START) {
+            if (game == null || !game.getStateGame()) {
+                Player whitePlayer = new Player("Player 1", "bianco");
+                Player blackPlayer = new Player("Player 2", "nero");
+                game = new Game(whitePlayer, blackPlayer);
+                game.setStateGame(true);
+                
+                if (TAVOLIERE.hasBlockedCells()) {
+                    TAVOLIERE.applyBlockedCells();
+                } else {
+                    TAVOLIERE.setupGioco();
+                }
+                TAVOLIERE.printMap3(); // Stampa la mappa dopo aver applicato eventuali celle bloccate
+            } else {
+                System.out.println("Una partita è già in corso. Terminare la partita corrente \n" + "prima di iniziarne una nuova.");
+                return;
+            }
+        }
+        
+        while (game.getStateGame()) {
+            try {
+                System.out.print("\n\n | GAME | : ");
+                String inputPlay = input.next().toLowerCase().trim(); 
+                CommandType commPlay = checkCommand(POST_COMMAND, inputPlay);
+                if (commPlay != null) {
+                    HandleModule handler = POST_COMMAND.get(commPlay);
+                    if (handler != null) {
+                        handler.handle(input, new Scanner(inputPlay), commPlay);
+                        if (game.getStateGame() && !commPlay.equals(CommandType.GIVE_UP) && !commPlay.equals(CommandType.TABLE)) {
+                        }
+                    }
+                } else {
+                    System.out.println("Comando non valido, riprova");
+                }
+            } catch (Exception e) {
+                System.out.println("Errore di I/O: " + e.getMessage());
+            }
+        }
+        
+        if (!game.getStateGame()) {
+            System.out.println("Tornando al menu principale...");
+        }
+    }
 
 
     /**
@@ -224,7 +241,6 @@ public final class App {
             }
         }
     }
-
 
     /**
      * Handle the empty command.
@@ -259,6 +275,7 @@ public final class App {
             game.displayResults();  // Mostra i risultati
             game.setStateGame(false); // Imposta lo stato del gioco a falso per terminare la partita
             TAVOLIERE.resetMap(); // Resetta il tavoliere
+            TAVOLIERE.setBlocked(false);
         } else {
             System.out.println("Nessuna partita attiva al momento.");
         }
@@ -270,8 +287,6 @@ public final class App {
         System.out.println("\nScelta non valida, riprova..");
     }
 }
-
-
     /**
      * Handle the show moves command.
      *
@@ -284,6 +299,7 @@ public final class App {
         throws IOException {
         System.out.println("\na)in giallo le caselle raggiungibili con mosse che generano una nuova pedina\n"
         + "b) in arancione raggiungibili con mosse che consentono un salto");
+        TAVOLIERE.resetMap();
         TAVOLIERE.setupGioco();
         TAVOLIERE.setColor();
         TAVOLIERE.printMap2();
@@ -301,24 +317,76 @@ public final class App {
         game.getTable().printMap();
     }
 
-
+        /**
+     * Handles the capture operation in a game based on user input.
+     * This method reads a move from the user, attempts to parse and execute it. If the move is valid,
+     * it updates the game state and displays the game board. If the move is invalid, it prompts the user to try again.
+     * This method can throw an IOException if there is a problem with input handling.
+     *
+     * @param input     The Scanner instance used for additional input operations. Not used in this method.
+     * @param value     The Scanner instance used to read the move input from the user.
+     * @param command   The CommandType instance that specifies the type of command. Not used in this method.
+     * @throws IOException If an input or output exception occurred.
+     */
     public static void handleCapture(final Scanner input, final Scanner value, final CommandType command) throws IOException {
-    String moveInput = value.nextLine().trim();
-    Player currentPlayer = game.getCurrentPlayer(); // Ottieni il giocatore corrente dal gioco
-    try {
-        Move move = MoveParser.parseMove(moveInput, currentPlayer);
-        if (game.getMoveManager().makeMove(move)) {
-            System.out.println("\nMossa valida!");
-            game.getTable().printMap();
-        } else {
-            System.out.println("\nMossa non valida, riprova.");
+        String moveInput = value.nextLine().trim();
+        Player currentPlayer = game.getCurrentPlayer(); // Get the current player from the game
+        try {
+            Move move = MoveParser.parseMove(moveInput, currentPlayer);
+            if (game.getMoveManager().makeMove(move)) {
+                System.out.println("\nMossa valida!");
+                game.getTable().printMap();
+            } else {
+                System.out.println("\nMossa non valida, riprova.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
-    } catch (IllegalArgumentException e) {
-        System.out.println(e.getMessage());
     }
-}
 
-public static void handleOldMoves(final Scanner input, final Scanner value, final CommandType command) {
-    game.printMoves();
-}
+        /**
+     * Handles the display of previous moves in the game.
+     * This method prints all previously executed moves to provide a gameplay history.
+     * 
+     * @param input     The Scanner instance used to read user input. Not used in this method.
+     * @param value     Another Scanner instance, potentially for different input purposes. Not used in this method.
+     * @param command   The CommandType instance that specifies the type of command. Not used in this method.
+     */
+    public static void handleOldMoves(final Scanner input, final Scanner value, final CommandType command) {
+        game.printMoves();
+    }
+
+    /**
+     * Handles the operation of blocking cells on the game board.
+     * This method resets the game board, prompts the user to enter coordinates of cells to block until the maximum number of blockable cells is reached or the user types 'fine'.
+     * It confirms each blocked cell and provides feedback on successful or unsuccessful attempts to block a cell.
+     *
+     * @param input     The Scanner instance used to read user input. It reads the coordinates of cells to block.
+     * @param value     Another Scanner instance, potentially for different input purposes. Not used in this method.
+     * @param command   The CommandType instance that specifies the type of command. Not used in this method.
+     */
+    public static void handleBlockCell(final Scanner input, final Scanner value, final CommandType command) {
+        TAVOLIERE.resetMap();  // Ensure the board is clear before starting to block cells
+        System.out.println("Inserisci le coordinate delle celle da bloccare (es. d4, d5), digita 'fine' per terminare:");
+        TAVOLIERE.setupGioco();
+        TAVOLIERE.printMap3();  // Show the empty board for initial confirmation
+        String inputCell;
+        while (TAVOLIERE.getBlockedCount() < Table.MAX_BLOCKS && !(inputCell = input.next().trim()).equalsIgnoreCase("fine")) {
+            if (TAVOLIERE.processBlockCommand(inputCell)) {
+                System.out.println("Cella " + inputCell + " bloccata.");
+                System.out.println("\nPuoi ancora bloccare " + (Table.MAX_BLOCKS - TAVOLIERE.getBlockedCount()) + " celle.");
+                TAVOLIERE.printMap3();  // Update and show the board every time a cell is blocked
+            } else {
+                System.out.println("Impossibile bloccare la cella " + inputCell + ", riprova.");
+            }
+            if (TAVOLIERE.getBlockedCount() < Table.MAX_BLOCKS) {
+                System.out.println("Inserisci una nuova cella da bloccare o digita 'fine' per terminare:");
+            }
+        }
+
+        if (TAVOLIERE.getBlockedCount() >= Table.MAX_BLOCKS) {
+            System.out.println("Hai raggiunto il limite massimo di celle bloccate.");
+        }
+        System.out.println("\nBlocco delle celle completato.");
+    }
 }

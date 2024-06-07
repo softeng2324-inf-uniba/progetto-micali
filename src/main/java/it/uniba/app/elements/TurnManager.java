@@ -18,8 +18,8 @@ public class TurnManager {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         this.isWhiteTurn = true; // Assume the white player starts first
-        System.out.println("White player: " + whitePlayer.getName());
-        System.out.println("Black player: " + blackPlayer.getName());
+        System.out.println("Giocatore bianco: " + whitePlayer.getName());
+        System.out.println("Giocatore nero: " + blackPlayer.getName());
     }
 
     /**
@@ -28,7 +28,7 @@ public class TurnManager {
      * @return the current player.
      */
     public Player getCurrentPlayer() {
-        System.out.println("Current player: " + (isWhiteTurn ? whitePlayer.getName() : blackPlayer.getName()));
+        System.out.println("\nGiocatore corrente: " + (isWhiteTurn ? whitePlayer.getName() : blackPlayer.getName()));
         return isWhiteTurn ? whitePlayer : blackPlayer;
     }
 
@@ -47,14 +47,13 @@ public class TurnManager {
     public void nextTurn() {
         isWhiteTurn = !isWhiteTurn; // Switch turn to the opposite player
         notifyTurnChange();
-        System.out.println("Turn changed. It is now: " + getCurrentPlayer().getName() + "'s turn");
     }
 
     /**
      * Notifies that the turn has changed.
      */
     private void notifyTurnChange() {
-        System.out.println("It is now: " + getCurrentPlayer().getName() + "'s turn");
+        System.out.println("Turno cambiato. E' il turno di  " + getCurrentPlayer().getName());
     }
 
     /**
