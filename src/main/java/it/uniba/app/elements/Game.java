@@ -186,4 +186,57 @@ public class Game {
             System.out.println("Il gioco è finito. Vincitore: " + winner.getName());
         }
     }
+
+    /** 
+     * Checks if the current player can make a move.
+     * @return true if the current player can make a move, false otherwise.
+     */
+    public boolean canPlayerMove() {
+        Player currentPlayer = turnManager.getCurrentPlayer();
+        for (int i = 0; i < table.getSize(); i++) {
+            for (int j = 0; j < table.getSize(); j++) {
+                if (table.getPawnAt(i, j) != null &&
+                    table.getPawnAt(i, j).getOwner().equals(currentPlayer.getColor()) &&
+                    isMovePossible(i, j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a move is possible for a pawn at the given position.
+     * @param x the x-coordinate of the pawn.
+     * @param y the y-coordinate of the pawn.
+     * @return true if a move is possible, false otherwise.
+     */
+    private boolean isMovePossible(int x, int y) {
+        // Assume a move is possible if there is at least one empty adjacent cell
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                int newX = x + dx, newY = y + dy;
+                if (newX >= 0 && newX < table.getSize() && newY >= 0 && newY < table.getSize() &&
+                    (table.getPawnAt(newX, newY) == null || table.getPawnAt(newX, newY).getOwner().isEmpty())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Handles the turn of the current player.
+     * If the player cannot make a move, the turn is passed to the next player.
+     * Otherwise, it allows the player to make a move.
+     */
+    public void handleTurn() {
+        if (!canPlayerMove()) {
+            System.out.println("Nessuna mossa disponibile per " + turnManager.getCurrentPlayer().getName() + ". Turno passato.");
+            turnManager.nextTurn();
+        } else {
+            // Here you can implement the logic to allow the player to make a move
+            System.out.println("È il turno di " + turnManager.getCurrentPlayer().getName() + ".");
+        }
+    }
 }
