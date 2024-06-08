@@ -69,6 +69,6 @@ public class TurnManager {
      * Notifies that the turn has changed.
      */
     private void notifyTurnChange() {
-        System.out.println("Turno cambiato. È il turno di " + getCurrentPlayer().getName());
+        System.out.println("Turno cambiato. E' il turno di " + getCurrentPlayer().getName());
     }
 }

@@ -21,7 +21,7 @@ public final class Table {
      *
      * @param tableSize The size of the table (number of rows and columns).
      */
-    private Table(final int tableSize) {
+    public Table(final int tableSize) {
         this.size = tableSize;
         this.map = new Pawn[tableSize][tableSize];
         this.colorMap = new String[tableSize][tableSize];

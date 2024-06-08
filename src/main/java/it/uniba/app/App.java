@@ -31,7 +31,7 @@ public final class App {
     private static boolean exit = false;
     private static final Map<CommandType, HandleModule> PRE_COMMAND = new HashMap<>();
     private static final Map<CommandType, HandleModule> POST_COMMAND = new HashMap<>();
-    public static final Table TAVOLIERE = Table.getInstance(7); // Renamed to TABLE
+    private static Table tavoliere = Table.getInstance(Utilities.DIMENSION);
     private static volatile Game game;
 
     /**
@@ -164,12 +164,12 @@ public final class App {
             Player blackPlayer = new Player("Player 2", "nero");
             game = new Game(whitePlayer, blackPlayer);
             game.setStateGame(true);
-            if (TAVOLIERE.hasBlockedCells()) {
-                TAVOLIERE.applyBlockedCells();
+            if (tavoliere.hasBlockedCells()) {
+                tavoliere.applyBlockedCells();
             } else {
-                TAVOLIERE.setupGioco();
+                tavoliere.setupGioco();
             }
-            TAVOLIERE.printMap3(); // Stampa la mappa dopo aver applicato eventuali celle bloccate
+            tavoliere.printMap3(); // Stampa la mappa dopo aver applicato eventuali celle bloccate
         } else {
             System.out.println("Una partita è già in corso. Terminare la partita corrente \n"
                 + "prima di iniziarne una nuova.");
@@ -239,8 +239,8 @@ public final class App {
      */
     public static void handleEmpty(final Scanner input, final Scanner value, final CommandType command)
      throws IOException {
-        TAVOLIERE.resetMap();
-        TAVOLIERE.printMap();
+        tavoliere.resetMap();
+        tavoliere.printMap();
     }
 
     /**
@@ -261,8 +261,8 @@ public final class App {
             game.calculateWinnerDueToForfeit();
             game.displayResults();
             game.setStateGame(false);
-            TAVOLIERE.resetMap();
-            TAVOLIERE.setBlocked(false);
+            tavoliere.resetMap();
+            tavoliere.setBlocked(false);
         } else {
             System.out.println("Nessuna partita attiva al momento.");
         }
@@ -276,7 +276,6 @@ public final class App {
 
     /**
      * Handle the show moves command.
-     *
      * @param input   the input scanner.
      * @param value   the value scanner.
      * @param command the command type.
@@ -286,10 +285,10 @@ public final class App {
         throws IOException {
         System.out.println("\na)in giallo le caselle raggiungibili con mosse che generano una nuova pedina\n"
         + "b) in arancione raggiungibili con mosse che consentono un salto");
-        TAVOLIERE.resetMap();
-        TAVOLIERE.setupGioco();
-        TAVOLIERE.setColor();
-        TAVOLIERE.printMap2();
+        tavoliere = new Table(tavoliere.getSize());
+        tavoliere.setupGioco();
+        tavoliere.setColor();
+        tavoliere.printMap2();
     }
 
     /**
@@ -354,28 +353,28 @@ public final class App {
      * @param command   The CommandType instance that specifies the type of command. Not used in this method.
      */
     public static void handleBlockCell(final Scanner input, final Scanner value, final CommandType command) {
-        TAVOLIERE.resetMap();  // Ensure the board is clear before starting to block cells
+        tavoliere.resetMap();  // Ensure the board is clear before starting to block cells
         System.out.println("Inserisci le coordinate delle celle da bloccare (es. d4, d5), "
                             + "digita 'fine' per terminare:");
-        TAVOLIERE.setupGioco();
-        TAVOLIERE.printMap3();  // Show the empty board for initial confirmation
+        tavoliere.setupGioco();
+        tavoliere.printMap3();  // Show the empty board for initial confirmation
         String inputCell;
         inputCell = input.next().trim();
-        while (TAVOLIERE.getBlockedCount() < Utilities.MAX_BLOCKS && !inputCell.equalsIgnoreCase("fine")) {
-            if (TAVOLIERE.processBlockCommand(inputCell)) {
+        while (tavoliere.getBlockedCount() < Utilities.MAX_BLOCKS && !inputCell.equalsIgnoreCase("fine")) {
+            if (tavoliere.processBlockCommand(inputCell)) {
                 System.out.println("Cella " + inputCell + " bloccata.");
                 System.out.println("\nPuoi ancora bloccare "
-                   + (Utilities.MAX_BLOCKS - TAVOLIERE.getBlockedCount()) + " celle.");
-                TAVOLIERE.printMap3();  // Update and show the board every time a cell is blocked
+                   + (Utilities.MAX_BLOCKS - tavoliere.getBlockedCount()) + " celle.");
+                   tavoliere.printMap3();  // Update and show the board every time a cell is blocked
             } else {
                 System.out.println("Impossibile bloccare la cella " + inputCell + ", riprova.");
             }
-            if (TAVOLIERE.getBlockedCount() < Utilities.MAX_BLOCKS) {
+            if (tavoliere.getBlockedCount() < Utilities.MAX_BLOCKS) {
                 System.out.println("Inserisci una nuova cella da bloccare o digita 'fine' per terminare:");
             }
             inputCell = input.next().trim(); // Ripeti l'assegnazione alla fine del ciclo
         }
-        if (TAVOLIERE.getBlockedCount() >= Utilities.MAX_BLOCKS) {
+        if (tavoliere.getBlockedCount() >= Utilities.MAX_BLOCKS) {
             System.out.println("Hai raggiunto il limite massimo di celle bloccate.");
         }
         System.out.println("\nBlocco delle celle completato.");

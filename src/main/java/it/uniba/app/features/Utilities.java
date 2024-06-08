@@ -26,6 +26,7 @@ public final class Utilities {
     public static final int PLAYER_POSITION_6 = 5;  // Corrected from 6 to 5
     public static final int POSITIVE_TWO = 2;
     public static final int NEGATIVE_TWO = -2;
+    public static final int DIMENSION = 7;
 
 
     // Maximum number of blocks that can be set in a game
