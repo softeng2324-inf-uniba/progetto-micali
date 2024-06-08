@@ -81,8 +81,4 @@ public class Pawn {
     public int getY() {
         return y;
     }
-
-    public String toString() {
-        return "Pawn{owner='" + owner + "', unicodeCharacter=" + unicodeCharacter + ", color='" + color + "', x=" + x + ", y=" + y + "}";
-    }
 }

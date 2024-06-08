@@ -11,14 +11,14 @@ public class Move {
     /**
      * Constructs a Move with the specified start and end coordinates and the player who made the move.
      *
-     * @param start  The starting coordinate of the move.
-     * @param end    The ending coordinate of the move.
-     * @param player The player who made the move.
+     * @param startCoordinate  The starting coordinate of the move.
+     * @param endCoordinate    The ending coordinate of the move.
+     * @param movePlayer The player who made the move.
      */
-    public Move(Coordinate start, Coordinate end, Player player) {
-        this.start = start;
-        this.end = end;
-        this.player = player;
+    public Move(final Coordinate startCoordinate, final Coordinate endCoordinate, final Player movePlayer) {
+        this.start = startCoordinate;
+        this.end = endCoordinate;
+        this.player = new Player(movePlayer.getName(), movePlayer.getColor());
     }
 
     /**
@@ -45,7 +45,7 @@ public class Move {
      * @return The player who made the move.
      */
     public Player getPlayer() {
-        return player;
+        return new Player(player.getName(), player.getColor());
     }
 
     /**

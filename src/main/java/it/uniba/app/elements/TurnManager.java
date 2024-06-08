@@ -4,41 +4,57 @@ package it.uniba.app.elements;
  * Manages the turns of players in the Ataxx game.
  */
 public class TurnManager {
-    private Player whitePlayer;
-    private Player blackPlayer;
-    private boolean isWhiteTurn; // True if it's white player's turn, false if it's black player's turn
-
+    private final Player whitePlayer;
+    private final Player blackPlayer;
+    private boolean isWhiteTurn;
     /**
      * Constructor for the TurnManager class.
-     *
-     * @param whitePlayer The player with the white pieces.
-     * @param blackPlayer The player with the black pieces.
+     * Assumes Player is immutable or creates a defensive copy.
+     * @param initialWhitePlayer The player with the white pieces.
+     * @param initialBlackPlayer The player with the black pieces.
      */
-    public TurnManager(Player whitePlayer, Player blackPlayer) {
-        this.whitePlayer = whitePlayer;
-        this.blackPlayer = blackPlayer;
+    public TurnManager(final Player initialWhitePlayer, final Player initialBlackPlayer) {
+        this.whitePlayer = new Player(initialWhitePlayer.getName(), initialWhitePlayer.getColor());
+        this.blackPlayer = new Player(initialBlackPlayer.getName(), initialBlackPlayer.getColor());
         this.isWhiteTurn = true; // Assume the white player starts first
-        System.out.println("Giocatore bianco: " + whitePlayer.getName());
-        System.out.println("Giocatore nero: " + blackPlayer.getName());
     }
 
     /**
-     * Retrieves the current player.
+     * Retrieves the current player by returning a defensive copy.
      *
-     * @return the current player.
+     * @return a new Player instance representing the current player.
      */
     public Player getCurrentPlayer() {
-        System.out.println("\nGiocatore corrente: " + (isWhiteTurn ? whitePlayer.getName() : blackPlayer.getName()));
-        return isWhiteTurn ? whitePlayer : blackPlayer;
+        return isWhiteTurn ? new Player(whitePlayer.getName(), whitePlayer.getColor())
+                           : new Player(blackPlayer.getName(), blackPlayer.getColor());
     }
 
     /**
-     * Retrieves the opponent player.
+     * Retrieves the opponent player by returning a defensive copy.
      *
-     * @return the opponent player.
+     * @return a new Player instance representing the opponent player.
      */
     public Player getOpponent() {
-        return isWhiteTurn ? blackPlayer : whitePlayer;
+        return isWhiteTurn ? new Player(blackPlayer.getName(), blackPlayer.getColor())
+                           : new Player(whitePlayer.getName(), whitePlayer.getColor());
+    }
+
+    /**
+     * Retrieves the white player.
+     *
+     * @return a new Player instance representing the white player.
+     */
+    public Player getWhitePlayer() {
+        return new Player(whitePlayer.getName(), whitePlayer.getColor());
+    }
+
+    /**
+     * Retrieves the black player.
+     *
+     * @return a new Player instance representing the black player.
+     */
+    public Player getBlackPlayer() {
+        return new Player(blackPlayer.getName(), blackPlayer.getColor());
     }
 
     /**
@@ -53,24 +69,6 @@ public class TurnManager {
      * Notifies that the turn has changed.
      */
     private void notifyTurnChange() {
-        System.out.println("Turno cambiato. E' il turno di  " + getCurrentPlayer().getName());
-    }
-
-    /**
-     * Retrieves the white player.
-     *
-     * @return the white player.
-     */
-    public Player getWhitePlayer() {
-        return whitePlayer;
-    }
-
-    /**
-     * Retrieves the black player.
-     *
-     * @return the black player.
-     */
-    public Player getBlackPlayer() {
-        return blackPlayer;
+        System.out.println("Turno cambiato. E' il turno di " + getCurrentPlayer().getName());
     }
 }

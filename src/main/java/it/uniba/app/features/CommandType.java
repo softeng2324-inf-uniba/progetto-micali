@@ -60,9 +60,8 @@ public enum CommandType {
     OLD_MOVES(new Pattern[] {Pattern.compile("^\\/mosse$"),
         Pattern.compile("^\\/oldmoves$")}),
 
-      
     BLOCKCELL(new Pattern[] {Pattern.compile("^\\/bloccaxn$"),
-    Pattern.compile("^\\/blockxn$")});   
+    Pattern.compile("^\\/blockxn$")});
 
     private final Set<Pattern> compiled;
 

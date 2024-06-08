@@ -3,54 +3,56 @@ package it.uniba.app.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * <Entity> class
- * The Game class represents a game instance.
+ * Represents a game instance in Ataxx, managing game state, player turns, and moves.
  */
 public class Game {
 
     private boolean stateGame = false;
     private static final int MAX_SIZE = 7;
     private final Table table;
-    private final TurnManager turnManager; // Aggiungi TurnManager come membro della classe
+    private final TurnManager turnManager;
     private List<String> whiteMoves;
-    private List<String> blackMoves;    
-    private Player winner; // Variabile di istanza per memorizzare il vincitore
+    private List<String> blackMoves;
+    private Player gameWinner;
 
     /**
-     * Constructs a new Game instance.
-     * The initial state of the game is set to false.
+     * Constructs a new Game instance initializing the players, table, and state.
+     * @param whitePlayer Player representing the white pieces
+     * @param blackPlayer Player representing the black pieces
      */
-    public Game(Player whitePlayer, Player blackPlayer) {
+    public Game(final Player whitePlayer, final Player blackPlayer) {
         this.stateGame = false;
-        this.table = Table.getInstance(MAX_SIZE); // Usa il singleton per ottenere l'istanza di Table
-        this.turnManager = new TurnManager(whitePlayer, blackPlayer); // Inizializza TurnManager
+        this.table = Table.getInstance(MAX_SIZE);
+        this.turnManager = new TurnManager(whitePlayer, blackPlayer);
         this.whiteMoves = new ArrayList<>();
         this.blackMoves = new ArrayList<>();
     }
-
     /**
      * Retrieves the table associated with the game.
      *
      * @return The table object.
-     */
+     */@SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "L'esposizione di table è gestita e considerata sicura nel contesto dell'uso")
     public Table getTable() {
         return table;
     }
-    
-    /** 
+    /**
      * @param move
      */
     // Metodo per aggiungere mosse alla lista
-    public void addMove(String move) {
+    public void addMove(final String move) {
         if (turnManager.getCurrentPlayer().getColor().equals("bianco")) {
             whiteMoves.add(move);
         } else {
             blackMoves.add(move);
         }
     }
-
+    /**
+     * Print moves of each player.
+     */
     public void printMoves() {
         System.out.println("Mosse giocatore bianco:");
         for (String move : whiteMoves) {
@@ -105,26 +107,23 @@ public class Game {
      * It considers the current player and their opponent's pawn counts to declare the winner.
      */
     public void calculateWinnerDueToForfeit() {
-        // Implementation of determining the winner when a player forfeits
-        // This should depend on which player is current and count the pawns of the opponent
         Player currentPlayer = turnManager.getCurrentPlayer();
         Player opponent = turnManager.getOpponent();
         int currentPlayerCount = table.countPawns(currentPlayer.getColor());
         int opponentPlayerCount = table.countPawns(opponent.getColor());
-        
-        // Determine the winner based on the pawn counts
-        winner = (currentPlayerCount > opponentPlayerCount) ? currentPlayer : opponent;
+        gameWinner = (currentPlayerCount > opponentPlayerCount) ? currentPlayer : opponent;
     }
 
     /**
-     * Displays the final results of the game, including the name of the winner and the count of remaining pawns for each player.
+     * Displays the final results of the game, including the name of
+     * the winner and the count of remaining pawns for each player.
      * This method prints out the winner's name and pawn count, along with the pawn count of the opponent.
      */
     public void displayResults() {
-        // Displays the final result of the game, including the winner and the pawn count
-        System.out.println("Il vincitore e': " + winner.getName());
-        System.out.println("Pedine rimaste - " + winner.getName() + ": " + table.countPawns(winner.getColor()));
-        System.out.println("Pedine rimaste - " + turnManager.getOpponent().getName() + ": " + table.countPawns(turnManager.getOpponent().getColor()));
+        System.out.println("Il vincitore e': " + gameWinner.getName());
+        System.out.println("Pedine rimaste - " + gameWinner.getName() + ": " + table.countPawns(gameWinner.getColor()));
+        System.out.println("Pedine rimaste - " + turnManager.getOpponent().getName()
+        + ": " + table.countPawns(turnManager.getOpponent().getColor()));
     }
 
 
@@ -155,17 +154,18 @@ public class Game {
             endGame();
         }
     }
-
     /**
      * Ends the current game session and determines the winner based on the number of pawns each player has.
-     * It prints the game results, including each player's pawn count, and declares the winner. Also resets the game board
+     * It prints the game results, including each player's pawn count,
+     * and declares the winner. Also resets the game board
      * and changes the game state to indicate that the game is finished.
      */
     public void endGame() {
         int whitePawns = table.countPawns("bianco");
         int blackPawns = table.countPawns("nero");
         Player winner = whitePawns > blackPawns ? turnManager.getWhitePlayer() : turnManager.getBlackPlayer();
-        System.out.println("Fine del gioco! Il vincitore e' " + winner.getName() + " con " + Math.max(whitePawns, blackPawns) + " pedine.");
+        System.out.println("Fine del gioco! Il vincitore e' " + winner.getName()
+        + " con " + Math.max(whitePawns, blackPawns) + " pedine.");
         System.out.println("Bianco: " + whitePawns + " pedine. Nero: " + blackPawns + " pedine.");
         setStateGame(false); // Set the game state to false, ending the game
         table.resetMap();
@@ -187,7 +187,7 @@ public class Game {
         }
     }
 
-    /** 
+    /**
      * Checks if the current player can make a move.
      * @return true if the current player can make a move, false otherwise.
      */
@@ -195,9 +195,9 @@ public class Game {
         Player currentPlayer = turnManager.getCurrentPlayer();
         for (int i = 0; i < table.getSize(); i++) {
             for (int j = 0; j < table.getSize(); j++) {
-                if (table.getPawnAt(i, j) != null &&
-                    table.getPawnAt(i, j).getOwner().equals(currentPlayer.getColor()) &&
-                    isMovePossible(i, j)) {
+                if (table.getPawnAt(i, j) != null
+                && table.getPawnAt(i, j).getOwner().equals(currentPlayer.getColor())
+                    && isMovePossible(i, j)) {
                     return true;
                 }
             }
@@ -211,20 +211,20 @@ public class Game {
      * @param y the y-coordinate of the pawn.
      * @return true if a move is possible, false otherwise.
      */
-    private boolean isMovePossible(int x, int y) {
+    private boolean isMovePossible(final int x, final int y) {
         // Assume a move is possible if there is at least one empty adjacent cell
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                int newX = x + dx, newY = y + dy;
-                if (newX >= 0 && newX < table.getSize() && newY >= 0 && newY < table.getSize() &&
-                    (table.getPawnAt(newX, newY) == null || table.getPawnAt(newX, newY).getOwner().isEmpty())) {
+                int newX = x + dx;
+                int newY = y + dy;
+                if (newX >= 0 && newX < table.getSize() && newY >= 0 && newY < table.getSize()
+                    && (table.getPawnAt(newX, newY) == null || table.getPawnAt(newX, newY).getOwner().isEmpty())) {
                     return true;
                 }
             }
         }
         return false;
     }
-
     /**
      * Handles the turn of the current player.
      * If the player cannot make a move, the turn is passed to the next player.
@@ -232,7 +232,8 @@ public class Game {
      */
     public void handleTurn() {
         if (!canPlayerMove()) {
-            System.out.println("Nessuna mossa disponibile per " + turnManager.getCurrentPlayer().getName() + ". Turno passato.");
+            System.out.println("Nessuna mossa disponibile per "
+            + turnManager.getCurrentPlayer().getName() + ". Turno passato.");
             turnManager.nextTurn();
         } else {
             // Here you can implement the logic to allow the player to make a move

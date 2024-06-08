@@ -3,7 +3,12 @@ package it.uniba.app.elements;
 /**
  * The MoveParser class parses move input strings into Move objects.
  */
-public class MoveParser {
+public final class MoveParser {
+
+    // Private constructor to prevent instantiation
+    private MoveParser() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 
     /**
      * Parses the move input string into a Move object.
@@ -13,7 +18,8 @@ public class MoveParser {
      * @return The Move object representing the parsed move.
      * @throws IllegalArgumentException If the move input string format is invalid.
      */
-    public static Move parseMove(String moveInput, Player currentPlayer) throws IllegalArgumentException {
+    public static Move parseMove(final String moveInput, final Player currentPlayer)
+    throws IllegalArgumentException {
         String[] parts = moveInput.split("-");
         if (parts.length != 2) {
             throw new IllegalArgumentException("Invalid move format.");
@@ -30,9 +36,13 @@ public class MoveParser {
      * @return The Coordinate object representing the parsed coordinate.
      * @throws IllegalArgumentException If the coordinate string format is invalid.
      */
-    private static Coordinate parseCoordinate(String coordinate) throws IllegalArgumentException {
-        if (coordinate.length() != 2 || coordinate.charAt(0) < 'a' || coordinate.charAt(0) > 'g' ||
-                coordinate.charAt(1) < '1' || coordinate.charAt(1) > '7') {
+    private static Coordinate parseCoordinate(final String coordinate)
+    throws IllegalArgumentException {
+        if (coordinate.length() != 2
+            || coordinate.charAt(0) < 'a'
+            || coordinate.charAt(0) > 'g'
+            || coordinate.charAt(1) < '1'
+            || coordinate.charAt(1) > '7') {
             throw new IllegalArgumentException("Invalid coordinate format: " + coordinate);
         }
         int row = coordinate.charAt(1) - '1'; // Convert '1' - '7' to 0 - 6

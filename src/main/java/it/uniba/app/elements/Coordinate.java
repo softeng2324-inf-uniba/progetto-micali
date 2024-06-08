@@ -11,12 +11,12 @@ public class Coordinate {
     /**
      * Constructs a Coordinate with the specified x and y values.
      *
-     * @param x the x value of the coordinate
-     * @param y the y value of the coordinate
+     * @param initialX the x value of the coordinate
+     * @param initialY the y value of the coordinate
      */
-    public Coordinate(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Coordinate(final int initialX, final int initialY) {
+        this.x = initialX;
+        this.y = initialY;
     }
 
     /**
@@ -44,9 +44,13 @@ public class Coordinate {
      * @return true if the objects are equal, false otherwise
      */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         Coordinate that = (Coordinate) obj;
         return x == that.x && y == that.y;
     }
@@ -67,7 +71,7 @@ public class Coordinate {
      * @param other the other coordinate
      * @return true if the coordinates are adjacent, false otherwise
      */
-    public boolean isAdjacent(Coordinate other) {
+    public boolean isAdjacent(final Coordinate other) {
         int dx = Math.abs(this.x - other.x);
         int dy = Math.abs(this.y - other.y);
         return (dx <= 1 && dy <= 1) && (dx + dy > 0);
