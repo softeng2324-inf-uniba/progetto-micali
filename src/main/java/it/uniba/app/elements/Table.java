@@ -1,5 +1,6 @@
 package it.uniba.app.elements;
 
+import it.uniba.app.features.Utilities;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -15,19 +16,6 @@ public final class Table {
     private boolean[][] blockedCells;
     private int blockedCount = 0; // Contatore delle caselle attualmente bloccate
     private boolean isBlocked = false; // Aggiunto per controllare se il blocco è stato eseguito
-    private static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
-    private static final String ANSI_CUSTOM_ORANGE_BACKGROUND = "\u001B[48;5;202m";
-    private static final String ANSI_GREY_BACKGROUND = "\u001B[100m";
-    private static final String ANSI_RESET = "\u001B[0m"; // Per resettare il colore alla fine di ogni cella
-    private static final int PLAYER_POSITION_1 = 0;
-    private static final int PLAYER_POSITION_2 = 1;
-    private static final int PLAYER_POSITION_3 = 2;
-    private static final int PLAYER_POSITION_4 = 4;
-    private static final int PLAYER_POSITION_5 = 5;
-    private static final int PLAYER_POSITION_6 = 6;
-    public static final int MAX_BLOCKS = 9; // Limite massimo di caselle bloccabili
-
-
     /**
      * Constructs a new Table object with the specified size.
      *
@@ -77,8 +65,6 @@ public final class Table {
         blockedCount = 0;
         isBlocked = false;  // Resetta lo stato bloccato
     }
-    
-
     /**
      * Sets up the game by configuring the pawns with the appropriate coordinates.
      */
@@ -88,29 +74,28 @@ public final class Table {
         map[size - 1][0] = new Pawn("bianco", '\u26C2', "\u001B[40m", size - 1, 0); // Nero
         map[size - 1][size - 1] = new Pawn("nero", '\u26C0', "\u001B[40m", size - 1, size - 1); // Bianco
     }
-
     /**
      * Sets up the color map for specific player positions.
      * This method assigns specific ANSI color codes to certain positions on the game board,
      * representing the colors of player territories.
      */
     public void setColor() {
-        colorMap[PLAYER_POSITION_1][PLAYER_POSITION_2] = ANSI_YELLOW_BACKGROUND;
-        colorMap[PLAYER_POSITION_2][PLAYER_POSITION_1] = ANSI_YELLOW_BACKGROUND;
-        colorMap[PLAYER_POSITION_2][PLAYER_POSITION_2] = ANSI_YELLOW_BACKGROUND;
-        colorMap[PLAYER_POSITION_1][PLAYER_POSITION_3] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_2][PLAYER_POSITION_3] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_3][PLAYER_POSITION_1] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_3][PLAYER_POSITION_2] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_3][PLAYER_POSITION_3] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_4][PLAYER_POSITION_4] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_4][PLAYER_POSITION_5] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_4][PLAYER_POSITION_6] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_5][PLAYER_POSITION_4] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_6][PLAYER_POSITION_4] = ANSI_CUSTOM_ORANGE_BACKGROUND;
-        colorMap[PLAYER_POSITION_5][PLAYER_POSITION_5] = ANSI_YELLOW_BACKGROUND;
-        colorMap[PLAYER_POSITION_5][PLAYER_POSITION_6] = ANSI_YELLOW_BACKGROUND;
-        colorMap[PLAYER_POSITION_6][PLAYER_POSITION_5] = ANSI_YELLOW_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_1][Utilities.PLAYER_POSITION_2] = Utilities.ANSI_YELLOW_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_2][Utilities.PLAYER_POSITION_1] = Utilities.ANSI_YELLOW_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_2][Utilities.PLAYER_POSITION_2] = Utilities.ANSI_YELLOW_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_1][Utilities.PLAYER_POSITION_3] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_2][Utilities.PLAYER_POSITION_3] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_3][Utilities.PLAYER_POSITION_1] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_3][Utilities.PLAYER_POSITION_2] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_3][Utilities.PLAYER_POSITION_3] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_4][Utilities.PLAYER_POSITION_4] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_4][Utilities.PLAYER_POSITION_5] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_4][Utilities.PLAYER_POSITION_6] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_5][Utilities.PLAYER_POSITION_4] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_6][Utilities.PLAYER_POSITION_4] = Utilities.ANSI_CUSTOM_ORANGE_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_5][Utilities.PLAYER_POSITION_5] = Utilities.ANSI_YELLOW_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_5][Utilities.PLAYER_POSITION_6] = Utilities.ANSI_YELLOW_BACKGROUND;
+        colorMap[Utilities.PLAYER_POSITION_6][Utilities.PLAYER_POSITION_5] = Utilities.ANSI_YELLOW_BACKGROUND;
     }
 
     /**
@@ -125,7 +110,7 @@ public final class Table {
                 Pawn pawn = map[i][j];
                 if (pawn != null && pawn.getOwner() != null && !pawn.getOwner().isEmpty()) {
                     // Assicurati di stampare solo il carattere Unicode della pedina
-                    String display = String.format(" %c ", pawn.getUnicodeCharacter()); // Formatta con spazi per allineamento
+                    String display = String.format(" %c ", pawn.getUnicodeCharacter());
                     System.out.print(display + "|");
                 } else {
                     System.out.print("   |"); // Celle vuote
@@ -136,7 +121,6 @@ public final class Table {
         }
         System.out.println("   a   b   c   d   e   f   g");
     }
-    
     /**
      * Prints the game map to the console with colors.
      */
@@ -147,26 +131,19 @@ public final class Table {
             System.out.print((i + 1) + " |");  // Stampa l'indice di riga con uno spazio
             for (int j = 0; j < size; j++) {
                 Pawn pawn = map[i][j];
-                String color = (colorMap[i][j] != null) ? colorMap[i][j] : ANSI_RESET;  // Colore dalla mappa o reset
+                String color = (colorMap[i][j] != null) ? colorMap[i][j] : Utilities.ANSI_RESET;
                 String content = "  ";  // Due spazi per default
                 if (pawn != null && pawn.getOwner() != null && !pawn.getOwner().isEmpty()) {
-                    content = " " + pawn.getUnicodeCharacter();  // Uno spazio e il carattere della pedina
+                    content = " " + pawn.getUnicodeCharacter();
                 }
-                // Utilizza String.format per garantire che il contenuto abbia sempre lo stesso numero di spazi visibili
                 System.out.print(String.format("%s%-3s%s|",
-                    color, content, ANSI_RESET));  // Allinea a sinistra con larghezza totale di 3 caratteri
+                    color, content, Utilities.ANSI_RESET));
             }
             System.out.println(" " + (i + 1));
             System.out.println("  +---+---+---+---+---+---+---+");
         }
         System.out.println("   a   b   c   d   e   f   g");
     }
-
-    /**
-     * Prints the map with the current state of the game.
-     * Each cell is represented by a character and may have a background color.
-     * Blocked cells are displayed with a grey background.
-     */
     /**
      * Prints the map with the current state of the game.
      * Each cell is represented by a character and may have a background color.
@@ -178,33 +155,28 @@ public final class Table {
         for (int i = 0; i < size; i++) {
             System.out.print((i + 1) + " |");
             for (int j = 0; j < size; j++) {
-                String cellBackground = ANSI_RESET;
+                String cellBackground = Utilities.ANSI_RESET;
                 String content = "   ";  // Default empty content
-    
                 if (blockedCells[i][j]) {
-                    cellBackground = ANSI_GREY_BACKGROUND;  // Grey background for blocked cells
+                    cellBackground = Utilities.ANSI_GREY_BACKGROUND;  // Grey background for blocked cells
                     content = " X ";  // Content for blocked cells
                 } else if (map[i][j] != null && !map[i][j].getOwner().isEmpty()) {
                     content = " " + map[i][j].getUnicodeCharacter() + " ";  // Content for occupied cells
                 }
-    
-                System.out.print(String.format("%s%-3s%s|", cellBackground, content, ANSI_RESET));  // Left align with a total width of 3 characters
+                System.out.print(String.format("%s%-3s%s|", cellBackground, content, Utilities.ANSI_RESET));
             }
             System.out.println(" " + (i + 1));
             System.out.println("  +---+---+---+---+---+---+---+");
         }
         System.out.println("   a   b   c   d   e   f   g");
     }
-    
-    
     /**
      * Ottiene la pedina nella posizione specificata.
-     *
      * @param x la coordinata x (riga) della pedina.
      * @param y la coordinata y (colonna) della pedina.
      * @return la pedina nella posizione specificata, o null se non c'è nessuna pedina.
      */
-    public Pawn getPawnAt(int x, int y) {
+    public Pawn getPawnAt(final int x, final int y) {
         if (x >= 0 && x < size && y >= 0 && y < size) {
             return map[x][y];
         }
@@ -218,31 +190,29 @@ public final class Table {
      * @param y la coordinata y (colonna) dove posizionare la pedina.
      * @param pawn la pedina da posizionare.
      */
-    public void setPawnAt(int x, int y, Pawn pawn) {
+    public void setPawnAt(final int x, final int y, final Pawn pawn) {
         if (x >= 0 && x < size && y >= 0 && y < size) {
             map[x][y] = pawn; // Assicurati che questo aggiorni effettivamente l'array
         }
     }
-    
     /**
      * Rimuove una pedina da una posizione specificata del tavoliere.
      *
      * @param x la coordinata x (riga) da cui rimuovere la pedina.
      * @param y la coordinata y (colonna) da cui rimuovere la pedina.
      */
-    public void clearPawnAt(int x, int y) {
+    public void clearPawnAt(final int x, final int y) {
         if (x >= 0 && x < size && y >= 0 && y < size) {
             map[x][y] = new Pawn("", ' ', "", x, y); // Imposta una pedina vuota
         }
     }
-
     /**
      * Counts the number of pawns owned by a specific player.
      *
      * @param owner the owner of the pawns to count.
      * @return the number of pawns owned by the specified player.
      */
-    public int countPawns(String owner) {
+    public int countPawns(final String owner) {
         int count = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -253,16 +223,14 @@ public final class Table {
             }
         }
         return count;
-    }    
-
-        /**
+    }
+     /**
      * Blocks a cell at the specified coordinates.
-     *
      * @param x the x-coordinate (row) of the cell to block.
      * @param y the y-coordinate (column) of the cell to block.
      * @return true if the cell was successfully blocked, false otherwise.
      */
-    public boolean blockCell(int x, int y) {
+    public boolean blockCell(final int x, final int y) {
         if (canBlockCell(x, y)) {
             blockedCells[x][y] = true;
             blockedCount++;
@@ -279,25 +247,20 @@ public final class Table {
      * @param y the y-coordinate (column) to check.
      * @return true if the position is a start position, false otherwise.
      */
-    private boolean isStartPosition(int x, int y) {
+    private boolean isStartPosition(final int x, final int y) {
         return (x == 0 && (y == 0 || y == size - 1)) || (x == size - 1 && (y == 0 || y == size - 1));
     }
-
-
-
-    
      /**
      * Checks if a cell can be blocked.
-     *
      * @param x the x-coordinate (row) of the cell.
      * @param y the y-coordinate (column) of the cell.
      * @return true if the cell can be blocked, false otherwise.
      */
-    private boolean canBlockCell(int x, int y) {
-        if (!isValidPosition(x, y) || blockedCells[x][y] || blockedCount >= MAX_BLOCKS || isStartPosition(x, y) || isInitialPawnPosition(x, y)) {
+    private boolean canBlockCell(final int x, final int y) {
+        if (!isValidPosition(x, y) || blockedCells[x][y] || blockedCount >= Utilities.MAX_BLOCKS
+        || isStartPosition(x, y) || isInitialPawnPosition(x, y)) {
             return false;
         }
-
         // Salva lo stato attuale delle celle bloccate
         boolean[][] tempBlockedCells = new boolean[size][size];
         for (int i = 0; i < size; i++) {
@@ -320,23 +283,26 @@ public final class Table {
  * @param y the y-coordinate (column) to check.
  * @return true if the position is an initial pawn position, false otherwise.
  */
-private boolean isInitialPawnPosition(int x, int y) {
-    return (x == 0 && y == 0) || (x == 0 && y == size - 1) || (x == size - 1 && y == 0) || (x == size - 1 && y == size - 1);
-}
+    private boolean isInitialPawnPosition(final int x, final int y) {
+        return (x == 0 && y == 0) || (x == 0 && y == size - 1)
+        || (x == size - 1 && y == 0) || (x == size - 1 && y == size - 1);
+    }
 
-/**
- * Checks if there are at least two free paths for the starting positions.
- *
- * @param tempBlockedCells the temporary blocked cells map.
- * @return true if there are at least two free paths, false otherwise.
- */
-private boolean hasTwoFreePaths(boolean[][] tempBlockedCells) {
-    int[][] directions = {
-        {1, 0}, {-1, 0}, {0, 1}, {0, -1}, 
-        {1, 1}, {-1, -1}, {1, -1}, {-1, 1}, 
-        {2, 0}, {-2, 0}, {0, 2}, {0, -2}, 
-        {2, 2}, {-2, -2}, {2, -2}, {-2, 2}
-    };
+    /**
+     * Checks if there are at least two free paths for the starting positions.
+     *
+     * @param tempBlockedCells the temporary blocked cells map.
+     * @return true if there are at least two free paths, false otherwise.
+     */
+    private boolean hasTwoFreePaths(final boolean[][] tempBlockedCells) {
+        int[][] directions = {
+            {1, 0}, {-1, 0}, {0, 1}, {0, -1},
+            {1, 1}, {-1, -1}, {1, -1}, {-1, 1},
+            {Utilities.POSITIVE_TWO, 0}, {Utilities.NEGATIVE_TWO, 0}, {0, Utilities.POSITIVE_TWO},
+            {0, Utilities.NEGATIVE_TWO}, {Utilities.POSITIVE_TWO, Utilities.POSITIVE_TWO},
+            {Utilities.NEGATIVE_TWO, Utilities.NEGATIVE_TWO}, {Utilities.POSITIVE_TWO, Utilities.NEGATIVE_TWO},
+            {Utilities.NEGATIVE_TWO, Utilities.POSITIVE_TWO}
+        };
     int[][] startPositions = {
         {0, 0}, {0, size - 1}, {size - 1, 0}, {size - 1, size - 1}
     };
@@ -369,19 +335,17 @@ private boolean hasTwoFreePaths(boolean[][] tempBlockedCells) {
      * @param y the y-coordinate (column) to check.
      * @return true if the position is valid, false otherwise.
      */
-    private boolean isValidPosition(int x, int y) {
+    private boolean isValidPosition(final int x, final int y) {
         // Verifica che la posizione non sia fuori dai limiti del tavolo
         return x >= 0 && x < size && y >= 0 && y < size;
     }
-    
-
     /**
      * Processes a block command from the user input.
      *
      * @param cell the cell to block, in the format "a1", "b2", etc.
      * @return true if the cell was successfully blocked, false otherwise.
      */
-    public boolean processBlockCommand(String cell) {
+    public boolean processBlockCommand(final String cell) {
         try {
             int y = cell.charAt(0) - 'a';
             int x = Integer.parseInt(cell.substring(1)) - 1;
@@ -403,7 +367,7 @@ private boolean hasTwoFreePaths(boolean[][] tempBlockedCells) {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (blockedCells[i][j]) {
-                    map[i][j] = new Pawn("blocked", 'X', ANSI_GREY_BACKGROUND, i, j);
+                    map[i][j] = new Pawn("blocked", 'X', Utilities.ANSI_GREY_BACKGROUND, i, j);
                 }
             }
         }
@@ -423,7 +387,7 @@ private boolean hasTwoFreePaths(boolean[][] tempBlockedCells) {
      *
      * @param status The new blocked status to set (true for blocked, false for not blocked).
      */
-    public void setBlocked(boolean status) {
+    public void setBlocked(final boolean status) {
         isBlocked = status;
     }
 

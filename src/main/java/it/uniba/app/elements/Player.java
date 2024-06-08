@@ -12,15 +12,15 @@ public class Player {
     private String color;  // Player's pawn color, e.g., "white" or "black".
     private long timeSpent;  // Time spent in milliseconds for the current turn.
     private int capturedPawns;  // Number of opponent pawns captured.
-    
+
     /**
      * Constructor for the player.
-     * @param name The name of the player.
-     * @param color The color of the player's pawns.
+     * @param playerName The name of the player.
+     * @param playerColor The color of the player's pawns.
      */
-    public Player(String name, String color) {
-        this.name = name;
-        this.color = color;
+    public Player(final String playerName, final String playerColor) {
+        this.name = playerName;
+        this.color = playerColor;
         this.timeSpent = 0;
         this.capturedPawns = 0;
     }
@@ -51,10 +51,10 @@ public class Player {
 
     /**
      * Sets the time spent for the current turn.
-     * @param timeSpent The time spent in milliseconds.
+     * @param newTimeSpent The time spent in milliseconds.
      */
-    public void setTimeSpent(long timeSpent) {
-        this.timeSpent = timeSpent;
+    public void setTimeSpent(final long newTimeSpent) {
+        this.timeSpent = newTimeSpent;
     }
 
     /**
@@ -67,17 +67,17 @@ public class Player {
 
     /**
      * Sets the number of captured pawns.
-     * @param capturedPawns The number of captured pawns.
+     * @param newCapturedPawns The number of captured pawns to be set.
      */
-    public void setCapturedPawns(int capturedPawns) {
-        this.capturedPawns = capturedPawns;
+    public void setCapturedPawns(final int newCapturedPawns) {
+        this.capturedPawns = newCapturedPawns;
     }
 
     /**
      * Increases the number of pawns captured by the player.
      * @param additionalPawns The number of additional pawns captured.
      */
-    public void addCapturedPawns(int additionalPawns) {
+    public void addCapturedPawns(final int additionalPawns) {
         this.capturedPawns += additionalPawns;
     }
 
@@ -92,6 +92,7 @@ public class Player {
      * Returns the string representation of the player.
      * @return A string representing the player.
      */
+    @Override
     public String toString() {
         return "Player{name='" + name + "', color='" + color + "'}";
     }
