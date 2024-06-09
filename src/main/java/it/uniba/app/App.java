@@ -14,6 +14,7 @@ import it.uniba.app.elements.Player;
 import it.uniba.app.elements.Table;
 import it.uniba.app.features.ColorShell;
 import it.uniba.app.features.CommandType;
+import it.uniba.app.features.PlayTime;
 import it.uniba.app.features.ViewResult;
 import it.uniba.app.interfaces.HandleModule;
 import it.uniba.app.features.Utilities;
@@ -31,6 +32,7 @@ public final class App {
     private static boolean exit = false;
     private static final Map<CommandType, HandleModule> PRE_COMMAND = new HashMap<>();
     private static final Map<CommandType, HandleModule> POST_COMMAND = new HashMap<>();
+    private static final PlayTime playTime = new PlayTime();
     private static Table tavoliere = Table.getInstance(Utilities.DIMENSION);
     private static volatile Game game;
 
@@ -92,6 +94,7 @@ public final class App {
         POST_COMMAND.put(CommandType.TABLE, App::handleTable);
         POST_COMMAND.put(CommandType.CAPTURE, App::handleCapture);
         POST_COMMAND.put(CommandType.OLD_MOVES, App::handleOldMoves);
+        POST_COMMAND.put(CommandType.TIME, App::handleTime); 
     }
 
     /**
@@ -164,6 +167,7 @@ public final class App {
             Player blackPlayer = new Player("Player 2", "nero");
             game = new Game(whitePlayer, blackPlayer);
             game.setStateGame(true);
+            playTime.start();
             if (tavoliere.hasBlockedCells()) {
                 tavoliere.applyBlockedCells();
             } else {
@@ -261,6 +265,10 @@ public final class App {
             game.calculateWinnerDueToForfeit();
             game.displayResults();
             game.setStateGame(false);
+            if(game.getStateGame()){
+                playTime.stop();
+                System.out.println("Tempo trascorso (hh:mm:ss): " + playTime.getElapsedTimeFormatted());
+            }
             tavoliere.resetMap();
             tavoliere.setBlocked(false);
         } else {
@@ -378,5 +386,10 @@ public final class App {
             System.out.println("Hai raggiunto il limite massimo di celle bloccate.");
         }
         System.out.println("\nBlocco delle celle completato.");
+    }
+
+    public static void handleTime(final Scanner input, final Scanner value, final CommandType command)
+    throws IOException {
+        System.out.println("Tempo trascorso (hh:mm:ss): " + playTime.getElapsedTimeFormatted());
     }
 }

@@ -61,7 +61,10 @@ public enum CommandType {
         Pattern.compile("^\\/oldmoves$")}),
 
     BLOCKCELL(new Pattern[] {Pattern.compile("^\\/bloccaxn$"),
-    Pattern.compile("^\\/blockxn$")});
+    Pattern.compile("^\\/blockxn$")}),
+
+    TIME(new Pattern[] {Pattern.compile("^\\/tempo$"),
+    Pattern.compile("^\\/time$")});
 
     private final Set<Pattern> compiled;
 
