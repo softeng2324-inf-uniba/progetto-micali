@@ -7,6 +7,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Represents a game instance in Ataxx, managing game state, player turns, and moves.
+ * <Control> class
  */
 public class Game {
 

@@ -2,6 +2,7 @@ package it.uniba.app.elements;
 
 /**
  * The Move class represents a move made by a player in the Ataxx game.
+ * <Entity> class
  */
 public class Move {
     private Coordinate start;

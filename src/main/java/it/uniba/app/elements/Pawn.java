@@ -2,6 +2,7 @@ package it.uniba.app.elements;
 
 /**
  * Class representing a pawn in the game. This class is immutable.
+ * <Entity> class
  */
 public class Pawn {
     /** Who owns the pawn. */

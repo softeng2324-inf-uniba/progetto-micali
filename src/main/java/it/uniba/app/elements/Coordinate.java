@@ -3,6 +3,7 @@ import java.util.Objects;
 
 /**
  * A class representing a coordinate in a 2D grid.
+ * <Value Object> class
  */
 public class Coordinate {
     private int x;

@@ -2,7 +2,7 @@ package it.uniba.app.elements;
 
 /**
  * Class that manages the player in the game Ataxx.
- * <b>Class Type:</b> <Entity>
+ * <b>Class Type:</b> <Entity class>
  * <b>Responsibilities:</b>
  * - Manage the time spent on each move.
  * - Track the number of captured pawns.

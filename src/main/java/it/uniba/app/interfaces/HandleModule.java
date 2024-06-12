@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 /**
  * <p>Interface for handling commands.</p>
+ * <Interface> class
  */
 public interface HandleModule {
     /**
