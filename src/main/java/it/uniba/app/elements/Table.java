@@ -4,6 +4,7 @@ import it.uniba.app.features.Utilities;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
+ * <Entity> class
  * The Table class represents the game board.
  * It contains methods to initialize the board, set up the game, and print the board.
  */

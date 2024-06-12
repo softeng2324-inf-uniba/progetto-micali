@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 /**
  * Manages the moves within the game, including move validation,
  * execution, and conversion of opponent's pieces.
+ * <Control> class
  */
 public class MoveManager {
     private Table table;
