@@ -1,4 +1,4 @@
-package it.uniba.app;
+package it.uniba.app.app;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public final class App {
     private static boolean exit = false;
     private static final Map<CommandType, HandleModule> PRE_COMMAND = new HashMap<>();
     private static final Map<CommandType, HandleModule> POST_COMMAND = new HashMap<>();
-    private static final PlayTime playTime = new PlayTime();
+    private static PlayTime playTime = PlayTime.INSTANCE;
     private static Table tavoliere = Table.getInstance(Utilities.DIMENSION);
     private static volatile Game game;
 
@@ -94,7 +94,7 @@ public final class App {
         POST_COMMAND.put(CommandType.TABLE, App::handleTable);
         POST_COMMAND.put(CommandType.CAPTURE, App::handleCapture);
         POST_COMMAND.put(CommandType.OLD_MOVES, App::handleOldMoves);
-        POST_COMMAND.put(CommandType.TIME, App::handleTime); 
+        POST_COMMAND.put(CommandType.TIME, App::handleTime);
     }
 
     /**
@@ -149,6 +149,7 @@ public final class App {
         System.out.printf(format, "/tavoliere/table", "Mostra il tavoliere di gioco");
         System.out.printf(format, "/abbandona/giveup", "Abbandona la partita in corso");
         System.out.printf(format, "/qualimosse/moves", "Mostra le mosse disponibili");
+        System.out.printf(format, "/tempo/time", "Mostra il tempo trascorso durante la partita");
     }
     // Ensure other methods are properly formatted, no trailing spaces, and do not exceed 120 characters per line.
 
@@ -245,6 +246,7 @@ public final class App {
      throws IOException {
         tavoliere.resetMap();
         tavoliere.printMap();
+        System.out.println("Tavoliere vuoto creato");
     }
 
     /**
@@ -265,9 +267,9 @@ public final class App {
             game.calculateWinnerDueToForfeit();
             game.displayResults();
             game.setStateGame(false);
-            if(game.getStateGame()){
+            if (game.getStateGame()) {
                 playTime.stop();
-                System.out.println("Tempo trascorso (hh:mm:ss): " + playTime.getElapsedTimeFormatted());
+                System.out.println("Tempo trascorso (hh:mm:ss): " + playTime.getElapsedTime() + " minuti");
             }
             tavoliere.resetMap();
             tavoliere.setBlocked(false);
@@ -387,9 +389,16 @@ public final class App {
         }
         System.out.println("\nBlocco delle celle completato.");
     }
-
+    /**
+     * Handles the time and prints the elapsed time in minutes.
+     *
+     * @param input   The scanner for user input.
+     * @param value   The scanner for command values.
+     * @param command The command type.
+     * @throws IOException If an I/O error occurs.
+     */
     public static void handleTime(final Scanner input, final Scanner value, final CommandType command)
     throws IOException {
-        System.out.println("Tempo trascorso (hh:mm:ss): " + playTime.getElapsedTimeFormatted());
+        System.out.println("Tempo trascorso (hh:mm:ss): " + playTime.getElapsedTime() + " minuti");
     }
 }
