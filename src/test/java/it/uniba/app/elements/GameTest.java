@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 class GameTest {
 
@@ -23,46 +24,47 @@ class GameTest {
         whitePlayer = new Player("Player 1", "bianco");
         blackPlayer = new Player("Player 2", "nero");
         game = new Game(whitePlayer, blackPlayer);
-        System.setOut(new PrintStream(outContent)); // Set up System.out to capture print statements.
+        System.setOut(new PrintStream(outContent, true, StandardCharsets.UTF_8));
     }
 
     @Test
-    @DisplayName("Test Game Initialization")
+    @DisplayName("Test Inizializzazione Gioco")
     void testGameInitialization() {
-        assertNotNull(game.getTable(), "Table should be initialized");
+        assertNotNull(game.getTable(), "La tavola dovrebbe essere inizializzata");
     }
 
     @Test
-    @DisplayName("Test Current Player Initialization")
+    @DisplayName("Test Inizializzazione Giocatore Corrente")
     void testCurrentPlayerInitialization() {
-        assertNotNull(game.getCurrentPlayer(), "Current player should be initialized");
+        assertNotNull(game.getCurrentPlayer(), "Il giocatore corrente dovrebbe essere inizializzato");
     }
 
     @Test
-    @DisplayName("Test Initial Game State Is False")
+    @DisplayName("Test Stato di Gioco Iniziale")
     void testInitialGameState() {
-        assertFalse(game.getStateGame(), "Game state should be false initially");
+        assertFalse(game.getStateGame(), "Lo stato del gioco dovrebbe essere inizialmente falso");
     }
 
     @Test
-    @DisplayName("Test Game State Can Be Set")
+    @DisplayName("Test Stato di Gioco Impostato Correttamente")
     void testGameStateCanBeSet() {
         game.setStateGame(true);
-        assertTrue(game.getStateGame(), "Game state should be true after setting it");
+        assertTrue(game.getStateGame(), "Lo stato del gioco dovrebbe essere vero dopo l'impostazione");
     }
 
     @Test
-    @DisplayName("Test Print Moves")
+    @DisplayName("Test Mosse Aggiunte Correttamente")
     void testPrintMoves() {
         game.setStateGame(true);
         game.addMove("a1");
         game.addMove("a2");
-        game.printMoves();  // Testing print functionality indirectly
-        assertTrue(outContent.toString().contains("a1; a2;"), "Output should contain moves");
+        game.printMoves();  // Test della funzionalità di stampa indirettamente
+        assertTrue(outContent.toString(StandardCharsets.UTF_8)
+                   .contains("a1; a2;"), "L'output dovrebbe contenere le mosse");
     }
 
     @Test
-    @DisplayName("Test Display Results")
+    @DisplayName("Test Visualizzazione Risultati")
     void testDisplayResults() {
         game.setStateGame(true);
         game.getTable().setPawnAt(0, 0, new Pawn("bianco", '\u2659', "", 0, 0));
@@ -70,14 +72,16 @@ class GameTest {
             new Pawn("nero", '\u265F', "", MAX_TABLE_SIZE - 1, MAX_TABLE_SIZE - 1));
         game.calculateWinnerDueToForfeit();
         game.displayResults();
-        assertTrue(outContent.toString().contains("Il vincitore e'"), "Should display winner info");
+        String output = outContent.toString(StandardCharsets.UTF_8);
+        System.out.println("Contenuto catturato: " + output);
+        assertTrue(output.contains("Il vincitore e'"),
+                "Dovrebbe visualizzare le informazioni sul vincitore");
     }
-
     @Test
-    @DisplayName("Test Board Is Full After Filling")
+    @DisplayName("Tavoliere Riempito Correttamente")
     void testBoardIsFullAfterFilling() {
         fillBoardWithPawns();
-        assertTrue(game.isBoardFull(), "Board should be full after filling all positions");
+        assertTrue(game.isBoardFull(), "Il tavoliere dovrebbe essere pieno");
     }
 
     private void fillBoardWithPawns() {

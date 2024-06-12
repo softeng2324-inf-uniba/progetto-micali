@@ -30,6 +30,15 @@ public class Game {
         this.whiteMoves = new ArrayList<>();
         this.blackMoves = new ArrayList<>();
     }
+
+    /**
+     * Returns the TurnManager object associated with this Game.
+     *
+     * @return the TurnManager object
+     */
+    public TurnManager getTurnManager() {
+        return turnManager;
+    }
     /**
      * Retrieves the table associated with the game.
      *
@@ -242,5 +251,4 @@ public class Game {
             System.out.println("È il turno di " + turnManager.getCurrentPlayer().getName() + ".");
         }
     }
-    
 }
