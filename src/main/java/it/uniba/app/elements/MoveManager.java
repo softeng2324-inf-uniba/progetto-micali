@@ -75,7 +75,7 @@ public class MoveManager {
         }
         // Verify that the destination position is empty
         if (targetPawn != null && targetPawn.getUnicodeCharacter() != ' ') {
-            System.out.println("La posizione di destinazione non è vuota.");
+            System.out.println("La posizione di destinazione non e' vuota.");
             return false;
         }
         // Check if the move is adjacent or a jump

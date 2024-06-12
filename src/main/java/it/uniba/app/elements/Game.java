@@ -120,13 +120,15 @@ public class Game {
      * This method prints out the winner's name and pawn count, along with the pawn count of the opponent.
      */
     public void displayResults() {
+        Player loser = turnManager.getWhitePlayer().equals(gameWinner)
+            ? turnManager.getBlackPlayer()
+            : turnManager.getWhitePlayer();
         System.out.println("Il vincitore e': " + gameWinner.getName());
-        System.out.println("Pedine rimaste - " + gameWinner.getName() + ": " + table.countPawns(gameWinner.getColor()));
-        System.out.println("Pedine rimaste - " + turnManager.getOpponent().getName()
-        + ": " + table.countPawns(turnManager.getOpponent().getColor()));
+        System.out.println("Pedine rimaste - " + gameWinner.getName() + ": "
+            + table.countPawns(gameWinner.getColor()));
+        System.out.println("Pedine rimaste - " + loser.getName() + ": "
+            + table.countPawns(loser.getColor()));
     }
-
-
     /**
      * Checks if the game board is full.
      *

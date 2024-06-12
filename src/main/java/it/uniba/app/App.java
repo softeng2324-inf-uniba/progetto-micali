@@ -149,6 +149,7 @@ public final class App {
         System.out.printf(format, "/tavoliere/table", "Mostra il tavoliere di gioco");
         System.out.printf(format, "/abbandona/giveup", "Abbandona la partita in corso");
         System.out.printf(format, "/qualimosse/moves", "Mostra le mosse disponibili");
+        System.out.printf(format, "/tempo/time", "Mostra il tempo trascorso durante la partita");
     }
     // Ensure other methods are properly formatted, no trailing spaces, and do not exceed 120 characters per line.
 
@@ -245,6 +246,7 @@ public final class App {
      throws IOException {
         tavoliere.resetMap();
         tavoliere.printMap();
+        System.out.println("Tavoliere vuoto creato");
     }
 
     /**
