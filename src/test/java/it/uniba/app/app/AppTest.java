@@ -1,4 +1,4 @@
-package it.uniba.app;
+package it.uniba.app.app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

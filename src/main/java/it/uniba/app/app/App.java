@@ -1,4 +1,4 @@
-package it.uniba.app;
+package it.uniba.app.app;
 
 import java.io.IOException;
 import java.util.HashMap;
