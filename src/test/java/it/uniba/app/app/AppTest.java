@@ -6,13 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import it.uniba.app.features.CommandType;
 import it.uniba.app.interfaces.HandleModule;
-
+import it.uniba.app.App;
 /**
  * Main test class of the application.
  */

@@ -1,4 +1,4 @@
 /**
  * Main package of the application.
  */
-package it.uniba.app.app;
+package it.uniba.app;
